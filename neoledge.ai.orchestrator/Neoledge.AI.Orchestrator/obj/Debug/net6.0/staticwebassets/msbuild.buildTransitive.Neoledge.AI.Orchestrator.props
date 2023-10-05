@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\buildMultiTargeting\Neoledge.AI.Orchestrator.props" />
+</Project>
