@@ -77,7 +77,7 @@ const showText = (id) => {
 }
 </script>
 <template>
-  <div class="card">
+  <div class="card" :style="{ minHeight: '100%', width: '100%' }">
     <h5>Document List</h5>
     <DataTable v-model:filters="filters" :value="texts" :paginator="true" :rows="10" dataKey="id" filterDisplay="menu"
       :loading="loading" :globalFilterFields="['title', 'type', 'state', 'priority']">
@@ -130,3 +130,8 @@ const showText = (id) => {
 
 
 
+<style>
+.p-datatable-wrapper {
+  height: 80%;
+}
+</style>
