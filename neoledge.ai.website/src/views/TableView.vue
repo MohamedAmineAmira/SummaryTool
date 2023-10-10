@@ -55,15 +55,13 @@ const getStatus = (index) => {
 
 const getSeverity = (status) => {
   switch (status) {
-    case 'unqualified':
-      return 'danger';
-    case 'qualified':
+    case 'Done':
       return 'success';
     case 'Created':
-      return 'info';
-    case 'negotiation':
-      return 'warning';
-    case 'renewal':
+      return 'secondary';
+    case 'Error':
+      return 'danger';
+    default:
       return null;
   }
 };
@@ -95,6 +93,7 @@ const showText = (id) => {
       <template #loading> Loading customers data. Please wait. </template>
       <Column field="title" header="Title" style="min-width: 10rem" />
       <Column field="type" header="Type" style="min-width: 10rem" />
+      <Column field="language" header="Language" style="min-width: 10rem" />
       <Column header="Date" filterField="date" dataType="date" style="min-width: 10rem">
         <template #body="{ data }">{{ formatDate(data.createdDATE) }}</template>
       </Column>

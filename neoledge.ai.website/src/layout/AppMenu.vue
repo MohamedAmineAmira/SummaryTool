@@ -7,10 +7,18 @@ const model = ref([
     {
         label: 'Home',
         items: [
-            { label: 'My Documents', icon: 'pi pi-fw pi-list', to: '/'},
-            { label: 'Dashboard', icon: 'pi pi-fw pi-image', to: '/dashboard' }
+            { label: 'Documents', icon: 'pi pi-fw pi-list', to: '/' },
+            { label: 'Dashboard', icon: 'pi pi-chart-bar', to: '/dashboard' }
         ]
-        
+    },
+    {
+        label: 'Settings Hub',
+        items: [
+            { label: 'Data Preprocessor', icon: 'pi pi-eraser', to: '/UUU' },
+            { label: 'Text Analytics Toolbox', icon: 'pi pi-cog', to: '/dashboard' },
+            { label: 'Summarizer Module', icon: 'pi pi-align-left', to: '/dashboard' }
+        ]
+
     }
 ]);
 </script>
@@ -20,7 +28,7 @@ const model = ref([
         <template v-for="(item, i) in model" :key="item">
             <app-menu-item v-if="!item.separator" :item="item" :index="i"></app-menu-item>
             <li v-if="item.separator" class="menu-separator"></li>
-        </template>   
+        </template>
     </ul>
 </template>
 

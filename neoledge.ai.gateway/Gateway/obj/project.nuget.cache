@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "1Ql+GhyFjjHNf7ye2D2nR4nFNC2jsQK7JbINUYKRGshtppIYKMgCnHiV9nMw37jlAy/RvZBSHYX57n1VtXoERQ==",
+  "dgSpecHash": "OUfZgnBUkqlc8D7XRvd+gw2HC6PsjzZEKyYgBxGuyPfVOsUzL0MHa/s/1LMRBn1jTFFdAYKB4JTm0GG91QOrew==",
   "success": true,
   "projectFilePath": "C:\\Git\\neoledge.ai.gateway\\Gateway\\Gateway.csproj",
   "expectedPackageFiles": [
@@ -45,6 +45,7 @@
     "C:\\Users\\mohamedamine\\.nuget\\packages\\microsoft.win32.registry\\5.0.0\\microsoft.win32.registry.5.0.0.nupkg.sha512",
     "C:\\Users\\mohamedamine\\.nuget\\packages\\microsoft.win32.systemevents\\5.0.0\\microsoft.win32.systemevents.5.0.0.nupkg.sha512",
     "C:\\Users\\mohamedamine\\.nuget\\packages\\mono.texttemplating\\2.2.1\\mono.texttemplating.2.2.1.nupkg.sha512",
+    "C:\\Users\\mohamedamine\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512",
     "C:\\Users\\mohamedamine\\.nuget\\packages\\swashbuckle.aspnetcore\\6.2.3\\swashbuckle.aspnetcore.6.2.3.nupkg.sha512",
     "C:\\Users\\mohamedamine\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.2.3\\swashbuckle.aspnetcore.swagger.6.2.3.nupkg.sha512",
     "C:\\Users\\mohamedamine\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.2.3\\swashbuckle.aspnetcore.swaggergen.6.2.3.nupkg.sha512",

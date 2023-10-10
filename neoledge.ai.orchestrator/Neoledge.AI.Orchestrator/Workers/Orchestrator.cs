@@ -35,14 +35,23 @@ namespace Neoledge.AI.Orchestrator.Workers
                 string httpContentString = await httpContent.ReadAsStringAsync();
                 var emptyJsonString = new StringContent("", Encoding.UTF8, "application/json").ReadAsStringAsync().Result;
                 var text = JsonConvert.DeserializeObject<Text>(httpContentString);
-
                 if (httpContentString != emptyJsonString)
                 {
+                    var endPoint = "";
+                    if (text?.Language == "French")
+                    {
+                        endPoint = "french-text";
+                    }
+                    else if (text?.Language == "English")
+                    {
+                        endPoint = "english-text";
+                    }
+
                     if (text?.State == State.Created)
                     {
                         var httpContentCleaning = await ChangeState(httpContent, State.Cleaning);
                         var putResponseCleaning = await EditText(httpContentCleaning);
-                        var postResponseCleaning = await CleaningText(httpContentCleaning, "https://localhost:7262/api/Text/edit");
+                        var postResponseCleaning = await CleaningText(httpContentCleaning, "https://localhost:7262/api/Text/edit", endPoint);
 
                         if (!postResponseCleaning.IsSuccessStatusCode)
                         {
@@ -54,7 +63,7 @@ namespace Neoledge.AI.Orchestrator.Workers
                     {
                         var httpContentProcessing = await ChangeState(httpContent, State.Processing);
                         var putResponseProcessing = await EditText(httpContentProcessing);
-                        var postResponseProcessing = await ProcessingText(httpContentProcessing, "https://localhost:7262/api/Text/edit");
+                        var postResponseProcessing = await ProcessingText(httpContentProcessing, "https://localhost:7262/api/Text/edit", endPoint);
 
                         if (!postResponseProcessing.IsSuccessStatusCode)
                         {
@@ -94,11 +103,11 @@ namespace Neoledge.AI.Orchestrator.Workers
             }
         }
 
-        private async Task<HttpResponseMessage> CleaningText(HttpContent httpContent, string url)
+        private async Task<HttpResponseMessage> CleaningText(HttpContent httpContent, string url, string endPoint)
         {
             var httpClientFlask = _httpClientFactory.CreateClient("HttpClientFlask");
             var httpContentCleaning = await AddUrl(httpContent, url);
-            var postResponse = await httpClientFlask.PostAsync("/cleaning-french-text", httpContentCleaning);
+            var postResponse = await httpClientFlask.PostAsync("/cleaning-" + endPoint, httpContentCleaning);
             return postResponse;
         }
 
@@ -121,11 +130,11 @@ namespace Neoledge.AI.Orchestrator.Workers
             }
         }
 
-        private async Task<HttpResponseMessage> ProcessingText(HttpContent httpContent, string url)
+        private async Task<HttpResponseMessage> ProcessingText(HttpContent httpContent, string url, string endPoint)
         {
             var httpClientFlask = _httpClientFactory.CreateClient("HttpClientFlask");
             var httpContentProcessing = await AddUrl(httpContent, url);
-            var postResponse = await httpClientFlask.PostAsync("/resume-french-text", httpContentProcessing);
+            var postResponse = await httpClientFlask.PostAsync("/resume-" + endPoint, httpContentProcessing);
             return postResponse;
         }
 

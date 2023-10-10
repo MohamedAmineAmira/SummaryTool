@@ -176,3 +176,4 @@ C:\Git\neoledge.ai.gateway\Gateway\obj\Debug\net6.0\refint\Gateway.dll
 C:\Git\neoledge.ai.gateway\Gateway\obj\Debug\net6.0\Gateway.pdb
 C:\Git\neoledge.ai.gateway\Gateway\obj\Debug\net6.0\Gateway.genruntimeconfig.cache
 C:\Git\neoledge.ai.gateway\Gateway\obj\Debug\net6.0\ref\Gateway.dll
+C:\Git\neoledge.ai.gateway\Gateway\bin\Debug\net6.0\Newtonsoft.Json.dll
