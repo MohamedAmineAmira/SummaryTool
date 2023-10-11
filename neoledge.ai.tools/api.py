@@ -2,7 +2,8 @@
 # import necessary libraries and functions
 from flask import Flask, jsonify, request
 import requests
-from cleaning import cleaning_french_text, cleaning_english_text
+from cleaningFrenchText import cleaning_french_text
+from cleaningEnglishText import cleaning_english_text
 from summarizing import summarizing_french_text, summarizing_english_text
 # creating a Flask app
 app = Flask(__name__)

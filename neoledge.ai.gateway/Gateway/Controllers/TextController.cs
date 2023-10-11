@@ -1,5 +1,6 @@
 ﻿using Gateway.Data;
 using Gateway.Models;
+using Gateway.Models.Presenter;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
@@ -16,7 +17,7 @@ namespace Gateway.Controllers
 
         // GET: api/texts
         [HttpGet]
-        public async Task<IEnumerable<Models.Text>> Get()
+        public async Task<IEnumerable<Text>> Get()
         {
             var texts = await _context.Texts.ToListAsync();
 
@@ -39,8 +40,17 @@ namespace Gateway.Controllers
         // POST: api/texts
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<IActionResult> Create(Text text)
+        public async Task<IActionResult> Create([FromForm] TextPresenter textPresenter)
         {
+            var text = new Text
+            {
+                Title = textPresenter.Title,
+                Type = textPresenter.Type,
+                Language = textPresenter.Language,
+                PlainText = textPresenter.PlainText,
+                Priority = textPresenter.Priority,
+                CreatedDATE = textPresenter.CreatedDATE
+            };
             await _context.Texts.AddAsync(text);
             await _context.SaveChangesAsync();
 

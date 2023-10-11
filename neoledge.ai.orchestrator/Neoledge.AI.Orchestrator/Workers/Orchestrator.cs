@@ -9,12 +9,11 @@ namespace Neoledge.AI.Orchestrator.Workers
     public sealed class Orchestrator : BackgroundService
     {
         private readonly ILogger<Orchestrator> _logger;
-        private readonly IHttpClientFactory _httpClientFactory;
-
-        public Orchestrator(ILogger<Orchestrator> logger, IHttpClientFactory httpClientFactory)
+        private readonly HttpClient _httpClient;
+        public Orchestrator(ILogger<Orchestrator> logger, HttpClient httpClient)
         {
             _logger = logger;
-            _httpClientFactory = httpClientFactory;
+            _httpClient = httpClient;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -37,34 +36,34 @@ namespace Neoledge.AI.Orchestrator.Workers
                 var text = JsonConvert.DeserializeObject<Text>(httpContentString);
                 if (httpContentString != emptyJsonString)
                 {
-                    var endPoint = "";
-                    if (text?.Language == "French")
-                    {
-                        endPoint = "french-text";
-                    }
-                    else if (text?.Language == "English")
-                    {
-                        endPoint = "english-text";
-                    }
-
+                    var language = text?.Language;
                     if (text?.State == State.Created)
                     {
                         var httpContentCleaning = await ChangeState(httpContent, State.Cleaning);
                         var putResponseCleaning = await EditText(httpContentCleaning);
-                        var postResponseCleaning = await CleaningText(httpContentCleaning, "https://localhost:7262/api/Text/edit", endPoint);
-
-                        if (!postResponseCleaning.IsSuccessStatusCode)
+                        var urlCleaning = await GetUrlCleaning(language);
+                        if (urlCleaning == "NotFound")
                         {
-                            await ChangeState(httpContent, State.Error);
+                            var httpContentCleaned = await ChangeState(httpContentCleaning, State.Cleaned);
+                            var putResponseCleaned = await EditText(httpContentCleaned);
                         }
+                        else
+                        {
+                            var postResponseCleaning = await CleaningText(httpContentCleaning, "https://localhost:7262/api/Text/edit", urlCleaning);
+                            if (!postResponseCleaning.IsSuccessStatusCode)
+                            {
+                                await ChangeState(httpContent, State.Error);
+                            }
+                        }
+
                     }
 
                     if (text?.State == State.Cleaned)
                     {
                         var httpContentProcessing = await ChangeState(httpContent, State.Processing);
                         var putResponseProcessing = await EditText(httpContentProcessing);
-                        var postResponseProcessing = await ProcessingText(httpContentProcessing, "https://localhost:7262/api/Text/edit", endPoint);
-
+                        var urlProcessing = await GetUrlProcessing(language);
+                        var postResponseProcessing = await ProcessingText(httpContentProcessing, "https://localhost:7262/api/Text/edit", urlProcessing);
                         if (!postResponseProcessing.IsSuccessStatusCode)
                         {
                             await ChangeState(httpContent, State.Error);
@@ -90,8 +89,7 @@ namespace Neoledge.AI.Orchestrator.Workers
         }
         private async Task<HttpContent> SearchText(State state)
         {
-            var httpClient = _httpClientFactory.CreateClient("HttpClientASP");
-            var response = await httpClient.GetAsync("/api/text/search");
+            var response = await _httpClient.GetAsync("https://localhost:7262/api/text/search");
 
             if (response.IsSuccessStatusCode)
             {
@@ -103,18 +101,17 @@ namespace Neoledge.AI.Orchestrator.Workers
             }
         }
 
-        private async Task<HttpResponseMessage> CleaningText(HttpContent httpContent, string url, string endPoint)
+        private async Task<HttpResponseMessage> CleaningText(HttpContent httpContent, string urlReturn, string urlCleaning)
         {
-            var httpClientFlask = _httpClientFactory.CreateClient("HttpClientFlask");
-            var httpContentCleaning = await AddUrl(httpContent, url);
-            var postResponse = await httpClientFlask.PostAsync("/cleaning-" + endPoint, httpContentCleaning);
+
+            var httpContentCleaning = await AddUrl(httpContent, urlReturn);
+            var postResponse = await _httpClient.PostAsync(urlCleaning, httpContentCleaning);
             return postResponse;
         }
 
         private async Task<IActionResult> EditText(HttpContent httpContent)
         {
-            var httpClientASP = _httpClientFactory.CreateClient("HttpClientASP");
-            var putResponse = await httpClientASP.PutAsync("/api/text/edit", httpContent);
+            var putResponse = await _httpClient.PutAsync("https://localhost:7262/api/text/edit", httpContent);
 
             if (putResponse.IsSuccessStatusCode)
             {
@@ -130,11 +127,10 @@ namespace Neoledge.AI.Orchestrator.Workers
             }
         }
 
-        private async Task<HttpResponseMessage> ProcessingText(HttpContent httpContent, string url, string endPoint)
+        private async Task<HttpResponseMessage> ProcessingText(HttpContent httpContent, string url, string urlProcessing)
         {
-            var httpClientFlask = _httpClientFactory.CreateClient("HttpClientFlask");
             var httpContentProcessing = await AddUrl(httpContent, url);
-            var postResponse = await httpClientFlask.PostAsync("/resume-" + endPoint, httpContentProcessing);
+            var postResponse = await _httpClient.PostAsync(urlProcessing, httpContentProcessing);
             return postResponse;
         }
 
@@ -159,6 +155,22 @@ namespace Neoledge.AI.Orchestrator.Workers
 
             return modifiedHttpContent;
         }
+
+        private async Task<string> GetUrlCleaning(string language)
+        {
+            var response = await _httpClient.GetAsync("https://localhost:7262/api/dataPreprocessor/getUrl/" + language);
+            var httpContent = response.Content;
+            string httpContentString = await httpContent.ReadAsStringAsync();
+            return httpContentString;
+        }
+        private async Task<string> GetUrlProcessing(string language)
+        {
+            var response = await _httpClient.GetAsync("https://localhost:7262/api/textAnalyticsToolbox/search/" + language);
+            var httpContent = response.Content;
+            string httpContentString = await httpContent.ReadAsStringAsync();
+            return httpContentString;
+        }
+
 
     }
 }

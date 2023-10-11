@@ -31,9 +31,6 @@ namespace Neoledge.AI.Orchestrator.Models
         public string? ProcessText { get; set; } = null;
 
         public string? CreatedDATE { get; set; }
-
-        public List<Message>? Messages { get; set; }
-
     }
     public enum State
     {

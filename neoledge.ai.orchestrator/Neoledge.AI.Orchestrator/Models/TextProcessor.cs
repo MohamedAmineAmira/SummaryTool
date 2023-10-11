@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Gateway.Models
+namespace Neoledge.AI.Orchestrator.Models
 {
-    public class SummarizerModule
+    public class TextProcessor
     {
         [Key]
         public int Id { get; set; }

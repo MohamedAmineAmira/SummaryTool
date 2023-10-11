@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Gateway.Models
+namespace Neoledge.AI.Orchestrator.Models
 {
     public class TextAnalyticsToolbox
     {

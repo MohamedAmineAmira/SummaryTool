@@ -1,11 +1,12 @@
 ﻿using Gateway.Data;
 using Gateway.Models;
+using Gateway.Models.Presenter;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Gateway.Controllers
 {
-    [Route("api/datapreprocessor")]
+    [Route("api/dataPreprocessor/")]
     [ApiController]
     public class DataPreprocessorController : ControllerBase
     {
@@ -34,9 +35,30 @@ namespace Gateway.Controllers
             return dataPreprocessor;
         }
 
-        [HttpPost]
-        public async Task<ActionResult<DataPreprocessor>> AddDataPreprocessor(DataPreprocessor dataPreprocessor)
+        [HttpGet("getUrl/{language}")]
+        public IActionResult GetDataPreprocessorUrl(string language)
         {
+            var dataPreprocessor = _context.DataPreprocessors
+                .FirstOrDefault(d => d.Language == language && d.IsActive);
+
+            if (dataPreprocessor != null)
+            {
+                return Ok(dataPreprocessor.Url);
+            }
+
+            return NotFound("NotFound");
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<DataPreprocessor>> AddDataPreprocessor([FromForm] DataPreprocessorPresenter dataPreprocessorPresenter)
+        {
+            var dataPreprocessor = new DataPreprocessor
+            {
+                Name = dataPreprocessorPresenter.Name,
+                Language = dataPreprocessorPresenter.Language,
+                IsActive = dataPreprocessorPresenter.IsActive,
+                Url = dataPreprocessorPresenter.Url
+            };
             _context.DataPreprocessors.Add(dataPreprocessor);
             await _context.SaveChangesAsync();
 
