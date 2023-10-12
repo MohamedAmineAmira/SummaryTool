@@ -18,10 +18,15 @@ namespace Gateway.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<DataPreprocessor>>> GetDataPreprocessors()
+        public async Task<ActionResult<IEnumerable<DataPreprocessor>>> GetDataPreprocessorsOrderedByLanguage()
         {
-            return await _context.DataPreprocessors.ToListAsync();
+            var dataPreprocessorsOrdered = await _context.DataPreprocessors
+                .OrderBy(dp => dp.Language)
+                .ToListAsync();
+
+            return dataPreprocessorsOrdered;
         }
+
 
         [HttpGet("{id}")]
         public async Task<ActionResult<DataPreprocessor>> GetDataPreprocessorById(int id)
