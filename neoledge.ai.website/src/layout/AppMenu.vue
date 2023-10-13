@@ -15,8 +15,8 @@ const model = ref([
         label: 'Settings Hub',
         items: [
             { label: 'Data Preprocessor', icon: 'pi pi-eraser', to: '/dataPreprocessor' },
-            { label: 'Text Analytics Toolbox', icon: 'pi pi-cog', to: '/dashboard' },
-            { label: 'Text Processor', icon: 'pi pi-align-left', to: '/dashboard' }
+            { label: 'Text Analytics Toolbox', icon: 'pi pi-cog', to: '/textAnalyticsToolbox' },
+            { label: 'Text Processor', icon: 'pi pi-align-left', to: '/textProcessor' }
         ]
 
     }

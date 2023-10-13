@@ -75,7 +75,7 @@ namespace Gateway.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<TextAnalyticsToolbox>> UpdateTextAnalyticsToolbox(int id, [FromForm] TextAnalyticsToolboxPresenter textAnalyticsToolboxPresenter)
+        public async Task<ActionResult<TextAnalyticsToolbox>> UpdateTextAnalyticsToolbox(int id, TextAnalyticsToolboxPresenter textAnalyticsToolboxPresenter)
         {
             var textAnalyticsToolbox = await _context.TextAnalyticsToolboxes.FindAsync(id);
 

@@ -10,7 +10,7 @@
 
         public string? Url { get; set; }
 
-        public int IdToolbox { get; set; }
+        public int ToolboxId { get; set; }
 
     }
 }

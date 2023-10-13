@@ -71,14 +71,21 @@ namespace Gateway.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> EditDataPreprocessor(int id, DataPreprocessor dataPreprocessor)
+        public async Task<IActionResult> EditDataPreprocessor(int id, DataPreprocessorPresenter dataPreprocessorPresenter)
         {
-            if (id != dataPreprocessor.Id)
+            var existingDataPreprocessor = await _context.DataPreprocessors.FindAsync(id);
+
+            if (existingDataPreprocessor == null)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            _context.Entry(dataPreprocessor).State = EntityState.Modified;
+            existingDataPreprocessor.Name = dataPreprocessorPresenter.Name;
+            existingDataPreprocessor.Language = dataPreprocessorPresenter.Language;
+            existingDataPreprocessor.IsActive = dataPreprocessorPresenter.IsActive;
+            existingDataPreprocessor.Url = dataPreprocessorPresenter.Url;
+
+            _context.Entry(existingDataPreprocessor).State = EntityState.Modified;
 
             try
             {

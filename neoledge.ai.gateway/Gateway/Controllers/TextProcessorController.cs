@@ -43,7 +43,7 @@ namespace Gateway.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TextProcessor>>> GetTextProcessors()
         {
-            var textProcessors = await _context.TextProcessors.Include(t => t.Toolbox).ToListAsync();
+            var textProcessors = await _context.TextProcessors.Include(t => t.Toolbox).OrderBy(t => t.Language).ToListAsync();
 
             string json = JsonConvert.SerializeObject(
                 textProcessors,
@@ -62,7 +62,7 @@ namespace Gateway.Controllers
         public async Task<ActionResult<TextProcessor>> AddTextProcessor([FromForm] TextProcessorPresenter presenter)
         {
 
-            var toolbox = await _context.TextAnalyticsToolboxes.FindAsync(presenter.IdToolbox);
+            var toolbox = await _context.TextAnalyticsToolboxes.FindAsync(presenter.ToolboxId);
 
             if (toolbox == null)
             {
@@ -91,9 +91,9 @@ namespace Gateway.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<TextProcessor>> UpdateTextProcessor(int id, [FromForm] TextProcessorPresenter presenter)
+        public async Task<ActionResult<TextProcessor>> UpdateTextProcessor(int id, TextProcessorPresenter presenter)
         {
-            var toolbox = await _context.TextAnalyticsToolboxes.FindAsync(presenter.IdToolbox);
+            var toolbox = await _context.TextAnalyticsToolboxes.FindAsync(presenter.ToolboxId);
 
             if (toolbox == null)
             {

@@ -28,17 +28,26 @@ function getAll() {
   loading.value = true;
   axiosInstance.get('/api/dataPreprocessor').then((data) => {
     dataPreprocessors.value = data;
-    console.log(dataPreprocessors.value)
-
   }).finally(() => {
     loading.value = false;
   })
 }
+function editDataPreprocessor(dataPreprocessor) {
+  axiosInstance.put('api/dataPreprocessor/' + dataPreprocessor.id, dataPreprocessor)
+    .then((response) => {
+      console.log(response.data);
+    })
+    .catch((error) => {
+      console.error('Error editing data preprocessor:', error);
+    });
+}
 function changeIsActive(row) {
+  editDataPreprocessor(row);
   if (row.isActive) {
     dataPreprocessors.value.forEach(element => {
       if (element.language == row.language && element.id != row.id) {
         element.isActive = false;
+        editDataPreprocessor(element);
       }
     });
   }
@@ -73,8 +82,7 @@ function changeIsActive(row) {
         <template #body="{ data }">
           <div class="grid formgrid">
             <div class="col-2">
-              <i title="edit" class="pi pi-pencil" style="cursor: pointer; font-size: 1.25rem;"
-                @click="showText(data.id)" />
+              <i title="edit" class="pi pi-pencil" style="cursor: pointer; font-size: 1.25rem;" />
             </div>
             <div class="col-2">
               <i title="delete" class="pi pi-trash" style="cursor: pointer; font-size: 1.25rem;" />
