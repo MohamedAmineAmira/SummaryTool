@@ -5,6 +5,6 @@
     "\\Gateway\\Controllers",
     "\\Gateway\\Models"
   ],
-  "SelectedNode": "\\Gateway.sln",
+  "SelectedNode": "\\Gateway\\Controllers\\TextController.cs",
   "PreviewInSolutionExplorer": false
 }

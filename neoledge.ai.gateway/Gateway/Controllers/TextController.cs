@@ -1,6 +1,7 @@
 ﻿using Gateway.Data;
 using Gateway.Models;
 using Gateway.Models.Presenter;
+using iTextSharp.text.pdf;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
@@ -56,6 +57,51 @@ namespace Gateway.Controllers
 
             return CreatedAtAction(nameof(GetById), new { id = text.Id }, text);
         }
+
+        [HttpPost("uploadFile")]
+        public IActionResult UploadFile(IFormFile pdfFile)
+        {
+            if (pdfFile == null || pdfFile.Length == 0)
+                return BadRequest("Invalid file");
+
+            try
+            {
+                // Save the file to a temporary location
+                var filePath = Path.GetTempFileName();
+                using (var stream = System.IO.File.Create(filePath))
+                {
+                    pdfFile.CopyTo(stream);
+                }
+
+                // Process the PDF using iTextSharp
+                string extractedText = ProcessPdfText(filePath);
+
+                // Delete the temporary file
+                System.IO.File.Delete(filePath);
+
+                return Ok(extractedText);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while processing the PDF: {ex.Message}");
+            }
+        }
+
+        private string ProcessPdfText(string filePath)
+        {
+            using (PdfReader reader = new PdfReader(filePath))
+            {
+                string extractedText = string.Empty;
+
+                for (int i = 1; i <= reader.NumberOfPages; i++)
+                {
+                    extractedText += iTextSharp.text.pdf.parser.PdfTextExtractor.GetTextFromPage(reader, i);
+                }
+
+                return extractedText;
+            }
+        }
+
 
         [HttpPut("edit")]
         [ProducesResponseType(typeof(Text), StatusCodes.Status200OK)]

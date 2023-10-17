@@ -1,11 +1,14 @@
 <script setup>
+import { ref, computed, defineEmits } from 'vue';
+
 import Button from 'primevue/button';
 import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
 import Dropdown from 'primevue/dropdown';
 import Textarea from 'primevue/textarea';
 import InputNumber from 'primevue/inputnumber';
-import { ref, computed, defineEmits } from 'vue';
+import FileUpload from 'primevue/fileupload';
+
 import axiosInstance from '@/service/axiosInstance';
 
 const props = defineProps(['visible']);
@@ -20,12 +23,12 @@ const document = ref({
     plainText: null,
     createdDATE: null
 })
-
 const titleError = ref(false);
 const typeError = ref(false);
 const languageError = ref(false);
 const priorityError = ref(false);
 const plainTextError = ref(false);
+const key = ref(0)
 
 const show = computed({
     get() {
@@ -85,6 +88,22 @@ function resetData() {
     priorityError.value = false;
     plainTextError.value = false;
 }
+
+function onUpload(file) {
+    const formData = new FormData();
+    formData.append('pdfFile', file.files[0]);
+    axiosInstance.post('api/text/uploadFile', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        }
+    }).then((data) => {
+        document.value.plainText = data;
+        key.value += 1;
+    }).catch((error) => {
+        console.error('Error uploading file', error);
+    });
+}
+
 </script>
 <template>
     <div class="card flex justify-content-center" v-if="show">
@@ -126,27 +145,46 @@ function resetData() {
                         class="p-error">Priority is required</small>
                 </div>
             </div>
-            <h5>Text</h5>
-            <Textarea v-model="document.plainText" class="responsive-textarea" style="font-size: 16px;"
-                :class="{ 'p-invalid': plainTextError == true }" @input="plainTextError = false"
-                placeholder="Text To Resume" :required="true" />
-            <small id="username-help" :style="{ 'visibility': plainTextError ? 'visible' : 'hidden' }" class="p-error">Text
-                is required</small>
+            <div class="grid formgrid textarea-block">
+                <h5>Text</h5>
+                <div class="upload-file-textarea">
+                    <FileUpload mode="basic" name="demo" accept=".pdf" @select="onUpload" :auto="false" choose-label=" "
+                        choose-icon="pi pi-spin pi-spinner" cancel-icon="pi pi-upload" :key="key" />
+                </div>
+
+                <Textarea v-model="document.plainText" class="responsive-textarea" style="font-size: 16px;"
+                    :class="{ 'p-invalid': plainTextError == true }" @input="plainTextError = false"
+                    placeholder="Text To Resume" :required="true" />
+                <small id="username-help" :style="{ 'visibility': plainTextError ? 'visible' : 'hidden' }"
+                    class="p-error">Text
+                    is required</small>
+            </div>
             <template #footer>
-                <Button icon="pi pi-align-left" label="Resume" class="p-button mr-3" @click="resumeText"></Button>
                 <Button icon="pi pi-delete-left" label="Cancel" class="p-button-secondary"
                     @click="$emit('close'), resetData()"></Button>
+                <Button icon="pi pi-align-left" label="Resume" class="p-button mr-3" @click="resumeText"></Button>
             </template>
         </Dialog>
     </div>
 </template>
 
   
-<style scoped>
+<style scoped lang="scss">
 .responsive-textarea {
     width: 100%;
     resize: vertical;
     min-height: 200px;
+    text-align: justify;
+}
+
+.textarea-block {
+    position: relative;
+}
+
+.upload-file-textarea {
+    position: absolute !important;
+    top: -5px;
+    right: 0px;
 }
 </style>
   

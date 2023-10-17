@@ -75,6 +75,7 @@ const getSeverity = (status) => {
       return null;
   }
 };
+
 const DisplayModal = () => {
   visible.value = !visible.value;
 }
