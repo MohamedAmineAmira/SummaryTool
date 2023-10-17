@@ -59,7 +59,7 @@ namespace Gateway.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult<TextProcessor>> AddTextProcessor([FromForm] TextProcessorPresenter presenter)
+        public async Task<ActionResult<TextProcessor>> AddTextProcessor(TextProcessorPresenter presenter)
         {
 
             var toolbox = await _context.TextAnalyticsToolboxes.FindAsync(presenter.ToolboxId);

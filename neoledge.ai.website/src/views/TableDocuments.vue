@@ -36,6 +36,7 @@ function getAll() {
 
   axiosInstance.get('api/text').then((data) => {
     texts.value = data;
+    console.log(texts.value)
 
   }).finally(() => {
     loading.value = false;
@@ -45,9 +46,18 @@ function getAll() {
 
 const formatDate = (dateString) => {
   const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-  const formattedDate = new Date(dateString).toLocaleDateString('en-US', options);
+  const [datePart, timePart] = dateString.split(' ');
+
+  const [day, month, year] = datePart.split('/');
+  const [hour, minute, second] = timePart.split(':');
+
+  const formattedDate = new Date(year, month - 1, day, hour, minute, second)
+    .toLocaleDateString('fr-FR', options);
+
   return formattedDate;
 };
+
+
 
 const getStatus = (index) => {
   return status[index];

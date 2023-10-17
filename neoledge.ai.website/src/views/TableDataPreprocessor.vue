@@ -8,6 +8,7 @@ import Button from 'primevue/button';
 import InputSwitch from 'primevue/inputswitch';
 import axiosInstance from '@/service/axiosInstance';
 import 'primeicons/primeicons.css';
+import AddDataPreprocessor from './AddDataPreprocessor.vue';
 
 const dataPreprocessors = ref([]);
 const loading = ref(true);
@@ -52,6 +53,9 @@ function changeIsActive(row) {
     });
   }
 }
+const DisplayModal = () => {
+  visible.value = !visible.value;
+}
 </script>
 <template>
   <div class="card" :style="{ minHeight: '100%', width: '100%' }">
@@ -92,6 +96,9 @@ function changeIsActive(row) {
       </Column>
     </DataTable>
   </div>
+  <Teleport to="body">
+    <AddDataPreprocessor :visible="visible" @close="visible = false" @confirm="visible = false; getAll()" />
+  </Teleport>
 </template>
 <style>
 .p-datatable-wrapper {

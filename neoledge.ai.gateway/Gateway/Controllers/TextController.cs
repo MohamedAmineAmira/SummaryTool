@@ -40,7 +40,7 @@ namespace Gateway.Controllers
         // POST: api/texts
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<IActionResult> Create([FromForm] TextPresenter textPresenter)
+        public async Task<IActionResult> Create(TextPresenter textPresenter)
         {
             var text = new Text
             {
@@ -57,24 +57,35 @@ namespace Gateway.Controllers
             return CreatedAtAction(nameof(GetById), new { id = text.Id }, text);
         }
 
-        // PUT: api/texts/edit
         [HttpPut("edit")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Update(Text text)
+        [ProducesResponseType(typeof(Text), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> UpdateText(TextPresenter textPresenter)
         {
-            var textInDb = await _context.Texts.FindAsync(text.Id);
-            if (textInDb == null)
-                return BadRequest();
+            var text = await _context.Texts.FindAsync(textPresenter.Id);
 
-            // Copy properties from 'text' to 'textInDb'
-            textInDb.State = text.State;  // Update other properties as needed
-            textInDb.PrepareText = text.PrepareText;
-            textInDb.ProcessText = text.ProcessText;
+            if (text == null)
+            {
+                return NotFound();
+            }
+
+            text.Title = textPresenter.Title;
+            text.Language = textPresenter.Language;
+            text.Type = textPresenter.Type;
+            text.PlainText = textPresenter.PlainText;
+            text.Priority = textPresenter.Priority;
+            text.State = (State)textPresenter.State;
+
+            text.PrepareText = textPresenter.PrepareText;
+            text.ProcessText = textPresenter.ProcessText;
+
+            text.CreatedDATE = textPresenter.CreatedDATE; // Assuming CreatedDATE is a string
+
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
+
 
 
         // DELETE: api/texts/{id}

@@ -55,7 +55,7 @@ namespace Gateway.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<DataPreprocessor>> AddDataPreprocessor([FromForm] DataPreprocessorPresenter dataPreprocessorPresenter)
+        public async Task<ActionResult<DataPreprocessor>> AddDataPreprocessor(DataPreprocessorPresenter dataPreprocessorPresenter)
         {
             var dataPreprocessor = new DataPreprocessor
             {

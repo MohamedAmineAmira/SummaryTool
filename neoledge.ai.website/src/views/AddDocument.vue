@@ -5,8 +5,7 @@ import InputText from 'primevue/inputtext';
 import Dropdown from 'primevue/dropdown';
 import Textarea from 'primevue/textarea';
 import InputNumber from 'primevue/inputnumber';
-import InlineMessage from 'primevue/inlinemessage';
-import { ref, computed, defineEmits, reactive } from 'vue';
+import { ref, computed, defineEmits } from 'vue';
 import axiosInstance from '@/service/axiosInstance';
 
 const props = defineProps(['visible']);
@@ -65,6 +64,7 @@ function resumeText() {
 
     // If all fields are filled, proceed with resumeText logic
     document.value.createdDATE = new Date().toLocaleString();
+    console.log(document.value);
     axiosInstance.post('api/text', document.value).then(() => {
         resetData();
         emit("confirm");

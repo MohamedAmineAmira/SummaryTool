@@ -3,7 +3,7 @@ import TableDocuments from '../views/TableDocuments.vue'
 import AppLayout from '@/layout/AppLayout.vue';
 import TableDataPreprocessor from '../views/TableDataPreprocessor.vue';
 import TableTextToolbox from '../views/TableTextToolbox.vue';
-import TableTextProcessor from '../views/TableTextProcessor.vue';
+import TableTextSummarizer from '../views/TableTextSummarizer.vue';
 
 
 const router = createRouter({
@@ -26,8 +26,8 @@ const router = createRouter({
                     component: TableTextToolbox
                 },
                 {
-                    path: '/textProcessor',
-                    component: TableTextProcessor   
+                    path: '/textSummarizer',
+                    component: TableTextSummarizer   
                 }
             ]
 

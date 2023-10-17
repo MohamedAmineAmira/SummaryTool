@@ -8,6 +8,7 @@ import Button from 'primevue/button';
 import InputSwitch from 'primevue/inputswitch';
 import axiosInstance from '@/service/axiosInstance';
 import 'primeicons/primeicons.css';
+import AddTextSummarizer from './AddTextSummarizer.vue';
 
 const textProcessors = ref([]);
 const loading = ref(true);
@@ -61,16 +62,19 @@ function changeIsActive(row) {
         });
     }
 }
+const DisplayModal = () => {
+    visible.value = !visible.value;
+}
 </script>
 <template>
     <div class="card" :style="{ minHeight: '100%', width: '100%' }">
-        <h5>List of Data Preprocessing Tools</h5>
+        <h5>List of Summarizer Tools</h5>
         <DataTable v-model:filters="filters" :value="textProcessors" :paginator="true" :rows="10" dataKey="id"
             filterDisplay="menu" :loading="loading" :globalFilterFields="['name', 'language', 'url']">
             <template #header>
                 <div class="flex justify-content-between flex-column sm:flex-row">
-                    <Button type="button" icon="pi pi-plus" label="Add Data Preprocessor Tool"
-                        class="p-button-outlined mb-2" @click="DisplayModal()" />
+                    <Button type="button" icon="pi pi-plus" label="Add Summarizer Tool" class="p-button-outlined mb-2"
+                        @click="DisplayModal()" />
                     <span class="p-input-icon-left mb-2">
                         <i class="pi pi-search" />
                         <InputText v-model="filters['global'].value" placeholder="Keyword Search" style="width: 100%" />
@@ -101,6 +105,9 @@ function changeIsActive(row) {
             </Column>
         </DataTable>
     </div>
+    <Teleport to="body">
+        <AddTextSummarizer :visible="visible" @close="visible = false" @confirm="visible = false; getAll()" />
+    </Teleport>
 </template>
 <style>
 .p-datatable-wrapper {

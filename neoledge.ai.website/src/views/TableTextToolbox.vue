@@ -11,7 +11,10 @@ import 'primeicons/primeicons.css';
 
 const textAnalytics = ref([]);
 const loading = ref(true);
-const visible = ref(false);
+const tool = ref({
+    name: null,
+    IsActive: false
+});
 const filters = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     name: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
@@ -19,14 +22,12 @@ const filters = ref({
 
 onBeforeMount(() => {
     getAll()
-    visible.value = false
 });
 
 function getAll() {
     loading.value = true;
     axiosInstance.get('/api/textAnalyticsToolbox').then((data) => {
         textAnalytics.value = data;
-        console.log(textAnalytics.value);
     }).finally(() => {
         loading.value = false;
     })
@@ -51,6 +52,12 @@ function changeIsActive(row) {
         });
     }
 }
+function AddTool() {
+    axiosInstance.post('api/textAnalyticsToolbox', tool.value).then(() => {
+        tool.value.name = null;
+        getAll();
+    });
+}
 </script>
 <template>
     <div class="card" :style="{ minHeight: '100%', width: '100%' }">
@@ -59,8 +66,10 @@ function changeIsActive(row) {
             filterDisplay="menu" :loading="loading" :globalFilterFields="['name']">
             <template #header>
                 <div class="flex justify-content-between flex-column sm:flex-row">
-                    <Button type="button" icon="pi pi-plus" label="Add Text Analytice Tool" class="p-button-outlined mb-2"
-                        @click="DisplayModal()" />
+                    <div class="p-inputgroup  mb-2" style="width: 20vw;">
+                        <Button icon="pi pi-plus" @click="AddTool()" />
+                        <InputText v-model="tool.name" placeholder="Add New Tool" />
+                    </div>
                     <span class="p-input-icon-left mb-2">
                         <i class="pi pi-search" />
                         <InputText v-model="filters['global'].value" placeholder="Keyword Search" style="width: 100%" />

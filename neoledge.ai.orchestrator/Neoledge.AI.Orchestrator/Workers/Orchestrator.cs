@@ -45,7 +45,8 @@ namespace Neoledge.AI.Orchestrator.Workers
                         if (urlCleaning == "NotFound")
                         {
                             var httpContentCleaned = await ChangeState(httpContentCleaning, State.Cleaned);
-                            var putResponseCleaned = await EditText(httpContentCleaned);
+                            var httpContentPrepared = await ChangePrepareText(httpContentCleaned);
+                            var putResponseCleaned = await EditText(httpContentPrepared);
                         }
                         else
                         {
@@ -171,6 +172,14 @@ namespace Neoledge.AI.Orchestrator.Workers
             return httpContentString;
         }
 
+        private async Task<HttpContent> ChangePrepareText(HttpContent httpContent)
+        {
+            var jsonResponse = await httpContent.ReadAsStringAsync();
+            var text = JsonConvert.DeserializeObject<Text>(jsonResponse);
+            text.PrepareText = text.PlainText;
+            var jsonText = JsonConvert.SerializeObject(text);
+            return new StringContent(jsonText, Encoding.UTF8, "application/json");
+        }
 
     }
 }

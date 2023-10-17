@@ -16,7 +16,7 @@ const model = ref([
         items: [
             { label: 'Data Preprocessor', icon: 'pi pi-eraser', to: '/dataPreprocessor' },
             { label: 'Text Analytics Toolbox', icon: 'pi pi-cog', to: '/textAnalyticsToolbox' },
-            { label: 'Text Processor', icon: 'pi pi-align-left', to: '/textProcessor' }
+            { label: 'Text Summarizer', icon: 'pi pi-align-left', to: '/textSummarizer' }
         ]
 
     }

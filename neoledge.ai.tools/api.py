@@ -5,6 +5,8 @@ import requests
 from cleaningFrenchText import cleaning_french_text
 from cleaningEnglishText import cleaning_english_text
 from summarizing import summarizing_french_text, summarizing_english_text
+import warnings
+warnings.filterwarnings("ignore")
 # creating a Flask app
 app = Flask(__name__)
 @app.route("/")
