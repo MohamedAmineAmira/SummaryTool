@@ -31,6 +31,8 @@ namespace Gateway.Models
         public string? ProcessText { get; set; } = null;
 
         public string? CreatedDATE { get; set; }
+
+
     }
     public enum State
     {

@@ -1,4 +1,6 @@
 using Gateway.Data;
+using Gateway.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +12,13 @@ builder.Services.AddControllers();
 
 builder.Services.AddDbContext<TextDbContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer")));
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+{
+    options.Password.RequiredLength = 5;
+
+}).AddEntityFrameworkStores<TextDbContext>()
+.AddDefaultTokenProviders();
+builder.Services.AddTransient<IAuthService, AuthService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
