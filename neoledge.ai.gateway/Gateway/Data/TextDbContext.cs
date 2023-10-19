@@ -15,7 +15,6 @@ namespace Gateway.Data
         public DbSet<DataPreprocessor> DataPreprocessors { get; set; }
         public DbSet<TextAnalyticsToolbox> TextAnalyticsToolboxes { get; set; }
         public DbSet<TextProcessor> TextProcessors { get; set; }
-        public DbSet<User> Users { get; set; } = null!;
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

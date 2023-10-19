@@ -3,8 +3,9 @@
     "",
     "\\Gateway",
     "\\Gateway\\Controllers",
-    "\\Gateway\\Models"
+    "\\Gateway\\Models",
+    "\\Gateway\\Services"
   ],
-  "SelectedNode": "\\Gateway\\Controllers\\TextController.cs",
+  "SelectedNode": "\\Gateway\\Services\\AuthService.cs",
   "PreviewInSolutionExplorer": false
 }

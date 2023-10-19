@@ -12,12 +12,14 @@ builder.Services.AddControllers();
 
 builder.Services.AddDbContext<TextDbContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer")));
+
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
+    options.User.RequireUniqueEmail = true;
     options.Password.RequiredLength = 5;
 
-}).AddEntityFrameworkStores<TextDbContext>()
-.AddDefaultTokenProviders();
+}).AddEntityFrameworkStores<TextDbContext>().AddDefaultTokenProviders().AddRoles<IdentityRole>();
+
 builder.Services.AddTransient<IAuthService, AuthService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -45,4 +47,15 @@ app.UseCors(builder =>
 
 app.MapControllers();
 
+using (var scope = app.Services.CreateScope())
+{
+    var roleManger = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var roles = new[] { "Admin", "SimpleUser" };
+    foreach (var role in roles)
+    {
+        if (!await roleManger.RoleExistsAsync(role))
+            await roleManger.CreateAsync(new IdentityRole(role));
+
+    }
+}
 app.Run();

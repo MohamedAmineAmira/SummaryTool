@@ -11,7 +11,7 @@ namespace Gateway.Services
             _userManager = userManager;
         }
 
-        public async Task<bool> RegisterUser(RegisterUser registerUser)
+        public async Task<IdentityResult> RegisterUser(RegisterUser registerUser)
         {
             var identityUser = new IdentityUser
             {
@@ -19,19 +19,25 @@ namespace Gateway.Services
                 Email = registerUser.Email,
             };
             var result = await _userManager.CreateAsync(identityUser, registerUser.Password);
-            return result.Succeeded;
+            await _userManager.AddToRoleAsync(identityUser, "Admin"); //Moha**333
+            return result;
         }
 
-        public async Task<bool> LoginUser(LoginUser loginUser)
+        public async Task<string> LoginUser(LoginUser loginUser)
         {
-            var identityUser = await _userManager.FindByEmailAsync(loginUser.UserName);
+            var identityUser = await _userManager.FindByEmailAsync(loginUser.Email);
             if (identityUser == null)
             {
-                return false;
+                return "Email Not Exists";
             }
 
-            return await _userManager.CheckPasswordAsync(identityUser, loginUser.Password);
+            if (!await _userManager.CheckPasswordAsync(identityUser, loginUser.Password))
+            {
+                return "Password Wrong";
+            }
+            return "Done";
         }
+
 
     }
 }

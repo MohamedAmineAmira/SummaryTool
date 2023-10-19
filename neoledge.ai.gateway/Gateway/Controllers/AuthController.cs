@@ -1,5 +1,6 @@
 ﻿using Gateway.Models.Presenter;
 using Gateway.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Gateway.Controllers
@@ -15,27 +16,15 @@ namespace Gateway.Controllers
         }
 
         [HttpPost("Register")]
-        public async Task<IActionResult> RegisterUser([FromForm] RegisterUser registerUser)
+        public async Task<IdentityResult> RegisterUser([FromForm] RegisterUser registerUser)
         {
-            if (await _authService.RegisterUser(registerUser))
-            {
-                return Ok("Successfuly done");
-            }
-            return BadRequest("Something went false");
+            return await _authService.RegisterUser(registerUser);
         }
 
         [HttpPost("Login")]
-        public async Task<IActionResult> Login([FromForm] LoginUser user)
+        public async Task<string> Login([FromForm] LoginUser user)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-            if (await _authService.LoginUser(user))
-            {
-                return Ok("Done");
-            }
-            return BadRequest();
+            return await _authService.LoginUser(user);
         }
 
 
