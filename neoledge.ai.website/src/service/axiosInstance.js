@@ -1,12 +1,19 @@
 import axios from "axios";
 
 const baseURL = import.meta.env.VITE_BASE_URL || '';
+
 const instance = axios.create({
     baseURL
 });
 
 // Add a request interceptor
 instance.interceptors.request.use(function (config) {
+
+    const token = localStorage.getItem('token');
+    console.log("Tokeb ib ibstabce", token)
+    if (token) {
+        config.headers['Authorization'] = `Bearer ${token}`;
+    }
     // Do something before request is sent
     return config;
 }, function (error) {

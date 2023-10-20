@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "SbhPDrCC3a7WkZiCC+XGJrk3B9/GGhIAVcLQe7KbzoTf/IwpLESf9CZ20PBKZcyWO3HfzySAhboFSfW6I0o28A==",
+  "dgSpecHash": "lnJjc7kOyyYm21fyhmgZHBB8Zg8UZSrAW1JBdNy97InM6KLQmMy51WBsxaOdG1JhFeEZpF8TPWD3NdpH7cZL6w==",
   "success": true,
   "projectFilePath": "C:\\Git\\neoledge.ai.gateway\\Gateway\\Gateway.csproj",
   "expectedPackageFiles": [
@@ -13,6 +13,7 @@
     "C:\\Users\\mohamedamine\\.nuget\\packages\\microsoft.aspnetcore.authentication.abstractions\\2.2.0\\microsoft.aspnetcore.authentication.abstractions.2.2.0.nupkg.sha512",
     "C:\\Users\\mohamedamine\\.nuget\\packages\\microsoft.aspnetcore.authentication.cookies\\2.2.0\\microsoft.aspnetcore.authentication.cookies.2.2.0.nupkg.sha512",
     "C:\\Users\\mohamedamine\\.nuget\\packages\\microsoft.aspnetcore.authentication.core\\2.2.0\\microsoft.aspnetcore.authentication.core.2.2.0.nupkg.sha512",
+    "C:\\Users\\mohamedamine\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\6.0.16\\microsoft.aspnetcore.authentication.jwtbearer.6.0.16.nupkg.sha512",
     "C:\\Users\\mohamedamine\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\6.0.23\\microsoft.aspnetcore.cryptography.internal.6.0.23.nupkg.sha512",
     "C:\\Users\\mohamedamine\\.nuget\\packages\\microsoft.aspnetcore.cryptography.keyderivation\\6.0.23\\microsoft.aspnetcore.cryptography.keyderivation.6.0.23.nupkg.sha512",
     "C:\\Users\\mohamedamine\\.nuget\\packages\\microsoft.aspnetcore.dataprotection\\2.2.0\\microsoft.aspnetcore.dataprotection.2.2.0.nupkg.sha512",

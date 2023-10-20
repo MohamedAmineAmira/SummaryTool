@@ -22,9 +22,15 @@ namespace Gateway.Controllers
         }
 
         [HttpPost("Login")]
-        public async Task<string> Login([FromForm] LoginUser user)
+        public async Task<string> Login(LoginUser user)
         {
-            return await _authService.LoginUser(user);
+            var result = await _authService.LoginUser(user);
+            if (result == "Done")
+            {
+                var tokenString = _authService.GenerateTokenString(user);
+                return tokenString;
+            }
+            return result;
         }
 
 

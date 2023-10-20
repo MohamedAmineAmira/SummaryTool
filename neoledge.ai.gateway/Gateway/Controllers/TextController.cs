@@ -2,6 +2,7 @@
 using Gateway.Models;
 using Gateway.Models.Presenter;
 using iTextSharp.text.pdf;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
@@ -10,6 +11,7 @@ namespace Gateway.Controllers
 {
     [Route("api/text")]
     [ApiController]
+    [Authorize]
     public class TextController : ControllerBase
     {
         private readonly TextDbContext _context;

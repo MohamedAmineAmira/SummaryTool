@@ -7,16 +7,16 @@ const model = ref([
     {
         label: 'Home',
         items: [
-            { label: 'Documents', icon: 'pi pi-fw pi-list', to: '/' },
-            { label: 'Dashboard', icon: 'pi pi-chart-bar', to: '/dashboard' }
+            { label: 'Documents', icon: 'pi pi-fw pi-list', to: '/Acount/documents' },
+            { label: 'Dashboard', icon: 'pi pi-chart-bar', to: '/Acount/dashboard' }
         ]
     },
     {
         label: 'Settings Hub',
         items: [
-            { label: 'Data Preprocessor', icon: 'pi pi-eraser', to: '/dataPreprocessor' },
-            { label: 'Text Analytics Toolbox', icon: 'pi pi-cog', to: '/textAnalyticsToolbox' },
-            { label: 'Text Summarizer', icon: 'pi pi-align-left', to: '/textSummarizer' }
+            { label: 'Data Preprocessor', icon: 'pi pi-eraser', to: '/Acount/dataPreprocessor' },
+            { label: 'Text Analytics Toolbox', icon: 'pi pi-cog', to: '/Acount/textAnalyticsToolbox' },
+            { label: 'Text Summarizer', icon: 'pi pi-align-left', to: '/Acount/textSummarizer' }
         ]
 
     }

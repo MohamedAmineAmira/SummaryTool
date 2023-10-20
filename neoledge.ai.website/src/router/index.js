@@ -4,33 +4,37 @@ import AppLayout from '@/layout/AppLayout.vue';
 import TableDataPreprocessor from '../views/TableDataPreprocessor.vue';
 import TableTextToolbox from '../views/TableTextToolbox.vue';
 import TableTextSummarizer from '../views/TableTextSummarizer.vue';
-
+import Login from '../views/auth/Login.vue';
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
         {
-            path: '/',
+            path: '/Acount',
             component: AppLayout,
             children: [
                 {
-                    path: '/',
+                    path: 'documents',
                     component: TableDocuments
                 },
                 {
-                    path: '/dataPreprocessor',
+                    path: 'dataPreprocessor',
                     component: TableDataPreprocessor
                 },
                 {
-                    path: '/textAnalyticsToolbox',
+                    path: 'textAnalyticsToolbox',
                     component: TableTextToolbox
                 },
                 {
-                    path: '/textSummarizer',
-                    component: TableTextSummarizer   
+                    path: 'textSummarizer',
+                    component: TableTextSummarizer
                 }
             ]
 
+        },
+        {
+            path: '/',
+            component: Login
         }
     ]
 })
