@@ -1,4 +1,5 @@
-﻿using Gateway.Models.Presenter;
+﻿using Gateway.Models;
+using Gateway.Models.Presenter;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -9,10 +10,10 @@ namespace Gateway.Services
 {
     public class AuthService : IAuthService
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _config;
 
-        public AuthService(UserManager<IdentityUser> userManager, IConfiguration config)
+        public AuthService(UserManager<ApplicationUser> userManager, IConfiguration config)
         {
             _userManager = userManager;
             _config = config;
@@ -20,13 +21,13 @@ namespace Gateway.Services
 
         public async Task<IdentityResult> RegisterUser(RegisterUser registerUser)
         {
-            var identityUser = new IdentityUser
+            var identityUser = new ApplicationUser
             {
                 UserName = registerUser.UserName,
                 Email = registerUser.Email,
             };
             var result = await _userManager.CreateAsync(identityUser, registerUser.Password);
-            await _userManager.AddToRoleAsync(identityUser, "Admin"); //Moha**333
+            await _userManager.AddToRoleAsync(identityUser, "SimpleUser");
             return result;
         }
 
@@ -45,12 +46,18 @@ namespace Gateway.Services
             return "Done";
         }
 
-        public string GenerateTokenString(LoginUser user)
+        public async Task<string> GenerateTokenString(LoginUser user)
         {
+            var identityUser = await _userManager.FindByEmailAsync(user.Email);
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Email,user.Email),
+                new Claim("userID",identityUser.Id)
+
             };
+            var roles = await _userManager.GetRolesAsync(identityUser);
+
+            claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("Jwt:Key").Value));
             var signingCred = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha512Signature);
@@ -64,6 +71,7 @@ namespace Gateway.Services
             string tokenString = new JwtSecurityTokenHandler().WriteToken(securityToken);
             return tokenString;
         }
+
 
 
     }

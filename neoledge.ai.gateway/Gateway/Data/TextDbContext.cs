@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gateway.Data
 {
-    public class TextDbContext : IdentityDbContext
+    public class TextDbContext : IdentityDbContext<ApplicationUser>
     {
         public TextDbContext(DbContextOptions<TextDbContext> options) : base(options)
         {
@@ -18,6 +18,7 @@ namespace Gateway.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<TextAnalyticsToolbox>()
                 .HasMany(toolbox => toolbox.TextProcessors)
                 .WithOne(summarizerModule => summarizerModule.Toolbox)
@@ -27,6 +28,19 @@ namespace Gateway.Data
                 .HasOne(textProcessor => textProcessor.Toolbox)
                 .WithMany(toolbox => toolbox.TextProcessors)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Text>()
+                .HasOne(t => t.User)
+                .WithMany(u => u.Texts)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ApplicationUser>()
+                .HasMany(u => u.Texts)
+                .WithOne(t => t.User)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
+
         }
     }
 }

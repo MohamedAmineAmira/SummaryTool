@@ -1,9 +1,12 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
 import AppMenuItem from './AppMenuItem.vue';
 
-const model = ref([
+const role = localStorage.getItem('role');
+console.log(role)
+
+const modelAdmin = ref([
     {
         label: 'Home',
         items: [
@@ -18,9 +21,19 @@ const model = ref([
             { label: 'Text Analytics Toolbox', icon: 'pi pi-cog', to: '/Acount/textAnalyticsToolbox' },
             { label: 'Text Summarizer', icon: 'pi pi-align-left', to: '/Acount/textSummarizer' }
         ]
-
     }
 ]);
+
+const modelUser = ref([
+    {
+        label: 'Home',
+        items: [
+            { label: 'Documents', icon: 'pi pi-fw pi-list', to: '/Acount/documents' },
+            { label: 'Dashboard', icon: 'pi pi-chart-bar', to: '/Acount/dashboard' }
+        ]
+    }
+]);
+const model = computed(() => role === "Admin" ? modelAdmin.value : modelUser.value)
 </script>
 
 <template>

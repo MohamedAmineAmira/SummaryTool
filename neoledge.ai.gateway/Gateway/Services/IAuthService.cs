@@ -5,7 +5,7 @@ namespace Gateway.Services
 {
     public interface IAuthService
     {
-        string GenerateTokenString(LoginUser user);
+        Task<string> GenerateTokenString(LoginUser user);
         Task<string> LoginUser(LoginUser loginUser);
         Task<IdentityResult> RegisterUser(RegisterUser registerUser);
     }

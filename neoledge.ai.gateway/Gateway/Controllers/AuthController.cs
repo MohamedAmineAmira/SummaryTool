@@ -2,6 +2,7 @@
 using Gateway.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Gateway.Controllers
 {
@@ -16,7 +17,7 @@ namespace Gateway.Controllers
         }
 
         [HttpPost("Register")]
-        public async Task<IdentityResult> RegisterUser([FromForm] RegisterUser registerUser)
+        public async Task<IdentityResult> RegisterUser(RegisterUser registerUser)
         {
             return await _authService.RegisterUser(registerUser);
         }
@@ -24,13 +25,21 @@ namespace Gateway.Controllers
         [HttpPost("Login")]
         public async Task<string> Login(LoginUser user)
         {
+
             var result = await _authService.LoginUser(user);
             if (result == "Done")
             {
                 var tokenString = _authService.GenerateTokenString(user);
-                return tokenString;
+                return await tokenString.ConfigureAwait(false);
             }
             return result;
+        }
+
+        [HttpGet("role")]
+        public string GetRole()
+        {
+            string RoleUser = HttpContext.User.FindFirstValue(ClaimTypes.Role);
+            return RoleUser;
         }
 
 

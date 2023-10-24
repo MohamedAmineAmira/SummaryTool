@@ -32,10 +32,12 @@ namespace Gateway.Models
 
         public string? CreatedDATE { get; set; }
 
-
+        public ApplicationUser? User { get; set; }
     }
+
     public enum State
     {
         Created, Cleaning, Cleaned, Processing, Processed, Done, Error
     }
 }
+

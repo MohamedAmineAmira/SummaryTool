@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import AppConfig from '@/layout/AppConfig.vue';
 import InputText from 'primevue/inputtext';
 import Password from 'primevue/password';
@@ -7,6 +7,7 @@ import Checkbox from 'primevue/checkbox';
 import Button from 'primevue/button';
 import axiosInstance from '@/service/axiosInstance';
 import router from '../../router';
+
 
 const login = ref({
     email: null,
@@ -25,13 +26,27 @@ async function Login() {
         } else if (data == 'Password Wrong') {
             errorPassword.value = true;
         } else {
+            PutRoleInLocalStorage();
             localStorage.setItem('token', data);
             router.push({ path: 'Acount/documents' })
         }
     });
-    // localStorage.removeItem('token');
 }
 
+function PutRoleInLocalStorage() {
+    axiosInstance.get('api/Auth/role').then((data) => {
+        localStorage.setItem('role', data);
+    }).then(() => {
+        location.reload()
+    })
+}
+
+function Register() {
+    router.push({ path: 'Register' })
+}
+const isSignInDisabled = computed(() => {
+    return !login.value.email || !login.value.password;
+});
 
 </script>
 
@@ -47,25 +62,34 @@ async function Login() {
                         <span class="text-600 font-medium">Sign in to continue</span>
                     </div>
                     <div>
-                        <label class="block text-900 text-xl font-medium mb-2">Email</label>
-                        <InputText type="text" placeholder="Email address" class="w-full md:w-30rem mb-5"
-                            style="padding: 1rem" v-model="login.email" :class="{ 'p-invalid': errorEmail == true }"
-                            @input="errorEmail = false" />
-                        <small :style="{ 'visibility': errorEmail ? 'visible' : 'hidden' }" class="p-error">Email Not
-                            Exists</small>
-                        <label class="block text-900 font-medium text-xl mb-2">Password</label>
-                        <Password v-model="login.password" placeholder="Password" :toggleMask="true" class="w-full mb-3"
-                            inputClass="w-full" :inputStyle="{ padding: '1rem' }"
-                            :class="{ 'p-invalid': errorPassword == true }" @input="errorPassword = false"></Password>
-                        <small :style="{ 'visibility': errorPassword ? 'visible' : 'hidden' }" class="p-error"> Password
-                            Wrong</small>
+                        <div class="row mb-4">
+                            <label class="block text-900 text-xl font-medium mb-2">Email</label>
+                            <InputText type="text" placeholder="Email address" class="w-full md:w-30rem mb-2"
+                                style="padding: 1rem" v-model="login.email" :class="{ 'p-invalid': errorEmail == true }"
+                                @input="errorEmail = false" />
+                            <small :style="{ 'visibility': errorEmail ? 'visible' : 'hidden' }" class="p-error block ">Email
+                                Not
+                                Exists</small>
+                        </div>
+                        <div class="row mb-4">
+                            <label class="block text-900 font-medium text-xl mb-2">Password</label>
+                            <Password v-model="login.password" placeholder="Password" :toggleMask="true" class="w-full mb-2"
+                                inputClass="w-full" :inputStyle="{ padding: '1rem' }"
+                                :class="{ 'p-invalid': errorPassword == true }" @input="errorPassword = false"
+                                :feedback="false"></Password>
+                            <small :style="{ 'visibility': errorPassword ? 'visible' : 'hidden' }" class="p-error"> Password
+                                Wrong</small>
+                        </div>
                         <div class="flex align-items-center justify-content-between mb-5 gap-5">
                             <div class="flex align-items-center">
                                 <Checkbox v-model="checked" binary class="mr-2"></Checkbox>
                                 <label for="rememberme1">Remember me</label>
                             </div>
+                            <a class="font-medium no-underline ml-2 text-right cursor-pointer"
+                                style="color: var(--primary-color)" @click="Register()">New Account</a>
                         </div>
-                        <Button label="Sign In" class="w-full p-3 text-xl" @click="Login()"></Button>
+                        <Button :disabled="isSignInDisabled" label="Sign In" class="w-full p-3 text-xl"
+                            @click="Login()"></Button>
                     </div>
                 </div>
             </div>

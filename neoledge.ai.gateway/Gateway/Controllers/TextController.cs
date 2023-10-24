@@ -5,13 +5,15 @@ using iTextSharp.text.pdf;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System.Globalization;
+using System.Security.Claims;
 
 namespace Gateway.Controllers
 {
     [Route("api/text")]
     [ApiController]
-    [Authorize]
+
     public class TextController : ControllerBase
     {
         private readonly TextDbContext _context;
@@ -19,15 +21,27 @@ namespace Gateway.Controllers
         public TextController(TextDbContext context) => _context = context;
 
         // GET: api/texts
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IEnumerable<Text>> Get()
         {
             var texts = await _context.Texts.ToListAsync();
-
             var sortedTexts = texts.OrderByDescending(text => DateTime.ParseExact(text.CreatedDATE, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture));
-
             return sortedTexts;
         }
+
+        //[Authorize(Roles = "SimpleUser")]
+        [HttpGet("getByUser")]
+        public async Task<IEnumerable<Text>> GetByIdUser()
+        {
+            var idUser = HttpContext.User.FindFirstValue("userID");
+            var texts = await _context.Texts.Where(t => t.User.Id == idUser).ToListAsync();
+            var sortedTexts = texts.OrderByDescending(text => DateTime.ParseExact(text.CreatedDATE, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture));
+            return sortedTexts;
+        }
+
+
+
 
         // GET: api/texts/{id}
         [HttpGet("{id}")]
@@ -45,6 +59,8 @@ namespace Gateway.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<IActionResult> Create(TextPresenter textPresenter)
         {
+            var idUser = HttpContext.User.FindFirstValue("userID");
+            ApplicationUser? user = await _context.Users.FindAsync(idUser);
             var text = new Text
             {
                 Title = textPresenter.Title,
@@ -52,12 +68,20 @@ namespace Gateway.Controllers
                 Language = textPresenter.Language,
                 PlainText = textPresenter.PlainText,
                 Priority = textPresenter.Priority,
-                CreatedDATE = textPresenter.CreatedDATE
+                CreatedDATE = textPresenter.CreatedDATE,
+                User = user
             };
-            await _context.Texts.AddAsync(text);
+            var a = _context.Texts.Add(text);
             await _context.SaveChangesAsync();
+            var id = a.Entity.Id;
+            var saved = await _context.Texts.FindAsync(id);
 
-            return CreatedAtAction(nameof(GetById), new { id = text.Id }, text);
+            string json = JsonConvert.SerializeObject(saved, Formatting.Indented, new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            });
+            return Ok(json);
+
         }
 
         [HttpPost("uploadFile")]

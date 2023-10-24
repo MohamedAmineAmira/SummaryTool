@@ -26,23 +26,37 @@ const filters = ref({
   priority: { value: null, matchMode: FilterMatchMode.EQUALS }
 });
 
+const role = localStorage.getItem('role');
 onBeforeMount(() => {
-  getAll()
+  getDocument()
   visible.value = false
 });
 
-function getAll() {
+function getDocument() {
+  if (role == "Admin") {
+    getAll()
+  } else {
+    getDocumentByUser()
+  }
+}
+
+function getDocumentByUser() {
   loading.value = true;
-
-  axiosInstance.get('api/text').then((data) => {
+  axiosInstance.get('api/text/getByUser').then((data) => {
     texts.value = data;
-    console.log(texts.value)
-
   }).finally(() => {
     loading.value = false;
   })
 }
 
+function getAll() {
+  loading.value = true;
+  axiosInstance.get('api/text').then((data) => {
+    texts.value = data;
+  }).finally(() => {
+    loading.value = false;
+  })
+}
 
 const formatDate = (dateString) => {
   const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
@@ -133,7 +147,7 @@ const showText = (id) => {
     </DataTable>
   </div>
   <Teleport to="body">
-    <AddDocument :visible="visible" @close="visible = false" @confirm="visible = false; getAll()" />
+    <AddDocument :visible="visible" @close="visible = false" @confirm="visible = false; getDocument()" />
     <ShowDocument :text="selectedText" :visible="showTextModalVisible" @close="showTextModalVisible = false" />
   </Teleport>
 </template>
