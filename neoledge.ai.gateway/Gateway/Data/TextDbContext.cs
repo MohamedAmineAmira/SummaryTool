@@ -15,6 +15,7 @@ namespace Gateway.Data
         public DbSet<DataPreprocessor> DataPreprocessors { get; set; }
         public DbSet<TextAnalyticsToolbox> TextAnalyticsToolboxes { get; set; }
         public DbSet<TextProcessor> TextProcessors { get; set; }
+        public DbSet<Log> Logs { get; set; } = null!;
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -39,7 +40,22 @@ namespace Gateway.Data
                 .WithOne(t => t.User)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<Text>()
+               .HasMany(text => text.Logs)
+               .WithOne(log => log.Text)
+               .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<Log>()
+                .HasOne(log => log.Text)
+                .WithMany(text => text.Logs)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<TextProcessor>()
+                .HasIndex(p => p.Name)
+                .IsUnique();
+            modelBuilder.Entity<DataPreprocessor>()
+                .HasIndex(p => p.Name)
+                .IsUnique();
 
         }
     }

@@ -10,13 +10,16 @@ import status from '@/models/enums/textStateEnum';
 import axiosInstance from '@/service/axiosInstance';
 import AddDocument from '@/views/AddDocument.vue';
 import ShowDocument from '@/views/ShowDocument.vue';
+import ShowLog from '@/views/ShowLog.vue';
 import 'primeicons/primeicons.css';
 
 const texts = ref([]);
 const loading = ref(true);
 const visible = ref(false);
 const showTextModalVisible = ref(false);
+const showLogTextModalVisible = ref(false);
 const selectedText = ref({});
+const selectedLogText = ref([]);
 
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -58,21 +61,6 @@ function getAll() {
   })
 }
 
-const formatDate = (dateString) => {
-  const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-  const [datePart, timePart] = dateString.split(' ');
-
-  const [day, month, year] = datePart.split('/');
-  const [hour, minute, second] = timePart.split(':');
-
-  const formattedDate = new Date(year, month - 1, day, hour, minute, second)
-    .toLocaleDateString('fr-FR', options);
-
-  return formattedDate;
-};
-
-
-
 const getStatus = (index) => {
   return status[index];
 }
@@ -98,6 +86,14 @@ const showText = (id) => {
   selectedText.value = texts.value.find((t) => t.id == id);
   showTextModalVisible.value = true;
 }
+
+const showLogText = (id) => {
+  axiosInstance.get('api/log/' + id).then((data) => {
+    selectedLogText.value = data;
+  });
+  console.log(selectedLogText.value);
+  showLogTextModalVisible.value = true;
+}
 </script>
 <template>
   <div class="card" :style="{ minHeight: '100%', width: '100%' }">
@@ -119,13 +115,19 @@ const showText = (id) => {
       <Column field="title" header="Title" style="min-width: 10rem" />
       <Column field="type" header="Type" style="min-width: 10rem" />
       <Column field="language" header="Language" style="min-width: 10rem" />
-      <Column header="Date" filterField="date" dataType="date" style="min-width: 10rem">
-        <template #body="{ data }">{{ formatDate(data.createdDATE) }}</template>
-      </Column>
+
       <Column field="status" header="Status" :showFilterMenu="false" :filterMenuStyle="{ width: '10rem' }"
         style="min-width: 12rem">
         <template #body="{ data }">
           <Tag :value="getStatus(data.state)" :severity="getSeverity(data.state)" />
+        </template>
+      </Column>
+      <Column header="Log" style="min-width: 9rem">
+        <template #body="{ data }">
+          <div class="col-3">
+            <i title="log" class="pi pi-history" style="cursor: pointer; font-size: 1.25rem;"
+              @click="showLogText(data.id)" />
+          </div>
         </template>
       </Column>
       <Column field="priority" header="Priority" filterField="priority" dataType="numeric" style="min-width: 9rem" />
@@ -149,6 +151,7 @@ const showText = (id) => {
   <Teleport to="body">
     <AddDocument :visible="visible" @close="visible = false" @confirm="visible = false; getDocument()" />
     <ShowDocument :text="selectedText" :visible="showTextModalVisible" @close="showTextModalVisible = false" />
+    <ShowLog :logText="selectedLogText" :visible="showLogTextModalVisible" @close="showLogTextModalVisible = false" />
   </Teleport>
 </template>
 

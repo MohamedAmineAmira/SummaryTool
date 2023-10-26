@@ -34,3 +34,4 @@ def summarizing_english_text(english_text):
     result = pipe_sum(english_text)
     result = result[0]['summary_text']
     return result
+

@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue';
-import AppConfig from '@/layout/AppConfig.vue';
+
 import InputText from 'primevue/inputtext';
 import Password from 'primevue/password';
 import Button from 'primevue/button';
@@ -92,7 +92,6 @@ const isRegisterDisabled = computed(() => {
             </div>
         </div>
     </div>
-    <AppConfig simple />
 </template>
 
 <style scoped>

@@ -1,6 +1,7 @@
 ﻿using Gateway.Data;
 using Gateway.Models;
 using Gateway.Models.Presenter;
+using Gateway.Services;
 using iTextSharp.text.pdf;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,14 +14,17 @@ namespace Gateway.Controllers
 {
     [Route("api/text")]
     [ApiController]
-
     public class TextController : ControllerBase
     {
         private readonly TextDbContext _context;
+        private readonly ILogService _logService;
 
-        public TextController(TextDbContext context) => _context = context;
+        public TextController(TextDbContext context, ILogService logService)
+        {
+            _context = context;
+            _logService = logService;
+        }
 
-        // GET: api/texts
         [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IEnumerable<Text>> Get()
@@ -30,7 +34,7 @@ namespace Gateway.Controllers
             return sortedTexts;
         }
 
-        //[Authorize(Roles = "SimpleUser")]
+        [Authorize(Roles = "SimpleUser")]
         [HttpGet("getByUser")]
         public async Task<IEnumerable<Text>> GetByIdUser()
         {
@@ -40,10 +44,6 @@ namespace Gateway.Controllers
             return sortedTexts;
         }
 
-
-
-
-        // GET: api/texts/{id}
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(Text), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -53,8 +53,6 @@ namespace Gateway.Controllers
             return text == null ? NotFound() : Ok(text);
         }
 
-
-        // POST: api/texts
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<IActionResult> Create(TextPresenter textPresenter)
@@ -74,6 +72,7 @@ namespace Gateway.Controllers
             var a = _context.Texts.Add(text);
             await _context.SaveChangesAsync();
             var id = a.Entity.Id;
+            _logService.CreateLog(id);
             var saved = await _context.Texts.FindAsync(id);
 
             string json = JsonConvert.SerializeObject(saved, Formatting.Indented, new JsonSerializerSettings
@@ -98,10 +97,8 @@ namespace Gateway.Controllers
                 {
                     pdfFile.CopyTo(stream);
                 }
-
                 // Process the PDF using iTextSharp
                 string extractedText = ProcessPdfText(filePath);
-
                 // Delete the temporary file
                 System.IO.File.Delete(filePath);
 
@@ -128,7 +125,6 @@ namespace Gateway.Controllers
             }
         }
 
-
         [HttpPut("edit")]
         [ProducesResponseType(typeof(Text), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -146,21 +142,22 @@ namespace Gateway.Controllers
             text.Type = textPresenter.Type;
             text.PlainText = textPresenter.PlainText;
             text.Priority = textPresenter.Priority;
-            text.State = (State)textPresenter.State;
+
+            if (text.State != (State)textPresenter.State)
+            {
+                text.State = (State)textPresenter.State;
+                await _logService.AddLog(text.Id, textPresenter.State);
+            }
 
             text.PrepareText = textPresenter.PrepareText;
             text.ProcessText = textPresenter.ProcessText;
-
-            text.CreatedDATE = textPresenter.CreatedDATE; // Assuming CreatedDATE is a string
+            text.CreatedDATE = textPresenter.CreatedDATE;
 
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-
-
-        // DELETE: api/texts/{id}
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -180,7 +177,7 @@ namespace Gateway.Controllers
         public async Task<IActionResult> GetLastText()
         {
             var orderedText = await _context.Texts
-                .Where(c => c.State != State.Done)
+                .Where(c => c.State != State.Done && c.State != State.Error)
                 .OrderByDescending(c => c.Priority) // Then, order by priorite in ascending order.
                 .ThenByDescending(c => c.CreatedDATE) // First, order by CreatedDATE in descending order.
                 .FirstOrDefaultAsync();

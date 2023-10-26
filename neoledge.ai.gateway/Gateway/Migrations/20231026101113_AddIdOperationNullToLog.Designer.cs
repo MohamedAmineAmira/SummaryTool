@@ -4,6 +4,7 @@ using Gateway.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gateway.Migrations
 {
     [DbContext(typeof(TextDbContext))]
-    partial class TextDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231026101113_AddIdOperationNullToLog")]
+    partial class AddIdOperationNullToLog
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -104,16 +107,13 @@ namespace Gateway.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Url")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
 
                     b.ToTable("DataPreprocessors");
                 });
@@ -126,8 +126,8 @@ namespace Gateway.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("OperationName")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("IdOperation")
+                        .HasColumnType("int");
 
                     b.Property<long?>("TextId")
                         .HasColumnType("bigint");
@@ -231,7 +231,7 @@ namespace Gateway.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ToolboxId")
                         .HasColumnType("int");
@@ -241,9 +241,6 @@ namespace Gateway.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
 
                     b.HasIndex("ToolboxId");
 

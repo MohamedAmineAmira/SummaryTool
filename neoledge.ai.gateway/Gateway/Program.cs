@@ -8,7 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -47,9 +47,21 @@ builder.Services.AddAuthentication(options =>
     );
 
 builder.Services.AddTransient<IAuthService, AuthService>();
+builder.Services.AddTransient<ILogService, LogService>();
 builder.Services.AddEndpointsApiExplorer();
-
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      policy =>
+                      {
+                          policy.WithOrigins("*")
+                                .AllowAnyHeader()
+                                .AllowAnyMethod();
+                      });
+});
+
 
 var app = builder.Build();
 
@@ -60,18 +72,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors(MyAllowSpecificOrigins);
 app.UseHttpsRedirection();
-
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Add the CORS policy here
-app.UseCors(builder =>
-{
-    builder.WithOrigins("http://localhost:3000")
-           .AllowAnyHeader()
-           .AllowAnyMethod();
-});
+
 
 app.MapControllers();
 

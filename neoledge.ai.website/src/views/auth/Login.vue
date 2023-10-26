@@ -1,6 +1,5 @@
 <script setup>
 import { ref, computed } from 'vue';
-import AppConfig from '@/layout/AppConfig.vue';
 import InputText from 'primevue/inputtext';
 import Password from 'primevue/password';
 import Checkbox from 'primevue/checkbox';
@@ -95,7 +94,6 @@ const isSignInDisabled = computed(() => {
             </div>
         </div>
     </div>
-    <AppConfig simple />
 </template>
 
 <style scoped>

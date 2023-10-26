@@ -33,6 +33,8 @@ namespace Gateway.Models
         public string? CreatedDATE { get; set; }
 
         public ApplicationUser? User { get; set; }
+
+        public virtual ICollection<Log>? Logs { get; set; }
     }
 
     public enum State
