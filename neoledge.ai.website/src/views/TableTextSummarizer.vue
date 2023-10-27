@@ -94,10 +94,10 @@ const DisplayModal = () => {
             <Column header="Options" style="min-width: 9rem">
                 <template #body="{ data }">
                     <div class="grid formgrid">
-                        <div class="col-2">
+                        <div class="col-3">
                             <i title="edit" class="pi pi-pencil" style="cursor: pointer; font-size: 1.25rem;" />
                         </div>
-                        <div class="col-2">
+                        <div class="col-3">
                             <i title="delete" class="pi pi-trash" style="cursor: pointer; font-size: 1.25rem;" />
                         </div>
                     </div>

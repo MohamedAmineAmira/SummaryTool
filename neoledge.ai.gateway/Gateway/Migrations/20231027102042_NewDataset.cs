@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Gateway.Migrations
 {
     /// <inheritdoc />
-    public partial class database : Migration
+    public partial class NewDataset : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -56,7 +56,7 @@ namespace Gateway.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Language = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     Url = table.Column<string>(type: "nvarchar(max)", nullable: false)
@@ -200,7 +200,7 @@ namespace Gateway.Migrations
                     State = table.Column<int>(type: "int", nullable: false),
                     PrepareText = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ProcessText = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedDATE = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedDATE = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
@@ -220,7 +220,7 @@ namespace Gateway.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Language = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -233,6 +233,28 @@ namespace Gateway.Migrations
                         name: "FK_TextProcessors_TextAnalyticsToolboxes_ToolboxId",
                         column: x => x.ToolboxId,
                         principalTable: "TextAnalyticsToolboxes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Logs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    Value = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    TextId = table.Column<long>(type: "bigint", nullable: true),
+                    OperationName = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Logs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Logs_Texts_TextId",
+                        column: x => x.TextId,
+                        principalTable: "Texts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -277,6 +299,23 @@ namespace Gateway.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_DataPreprocessors_Name",
+                table: "DataPreprocessors",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Logs_TextId",
+                table: "Logs",
+                column: "TextId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TextProcessors_Name",
+                table: "TextProcessors",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_TextProcessors_ToolboxId",
                 table: "TextProcessors",
                 column: "ToolboxId");
@@ -309,13 +348,16 @@ namespace Gateway.Migrations
                 name: "DataPreprocessors");
 
             migrationBuilder.DropTable(
+                name: "Logs");
+
+            migrationBuilder.DropTable(
                 name: "TextProcessors");
 
             migrationBuilder.DropTable(
-                name: "Texts");
+                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoles");
+                name: "Texts");
 
             migrationBuilder.DropTable(
                 name: "TextAnalyticsToolboxes");

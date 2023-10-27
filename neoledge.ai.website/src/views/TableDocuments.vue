@@ -91,7 +91,6 @@ const showLogText = (id) => {
   axiosInstance.get('api/log/' + id).then((data) => {
     selectedLogText.value = data;
   });
-  console.log(selectedLogText.value);
   showLogTextModalVisible.value = true;
 }
 </script>

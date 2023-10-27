@@ -21,7 +21,7 @@ const document = ref({
     language: null,
     priority: null,
     plainText: null,
-    createdDATE: null
+
 })
 const titleError = ref(false);
 const typeError = ref(false);
@@ -65,9 +65,6 @@ function resumeText() {
         return;
     }
 
-    // If all fields are filled, proceed with resumeText logic
-    document.value.createdDATE = new Date().toLocaleString();
-    console.log(document.value);
     axiosInstance.post('api/text', document.value).then(() => {
         resetData();
         emit("confirm");

@@ -6,6 +6,7 @@ import TableTextToolbox from '../views/TableTextToolbox.vue';
 import TableTextSummarizer from '../views/TableTextSummarizer.vue';
 import Login from '../views/auth/Login.vue';
 import Register from '../views/auth/Register.vue';
+import Dashboard from '../views/dashboard.vue';
 
 const isAuthenticated = () => {
     return localStorage.getItem('token') !== null;
@@ -41,6 +42,11 @@ const routes = [
                 path: 'documents',
                 component: TableDocuments,
                 beforeEnter: requireAuth // Apply the requireAuth guard
+            },
+            {
+                path: 'dashboard',
+                component: Dashboard,
+
             },
             {
                 path: 'dataPreprocessor',

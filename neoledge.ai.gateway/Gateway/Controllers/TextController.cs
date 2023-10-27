@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using System.Globalization;
 using System.Security.Claims;
 
 namespace Gateway.Controllers
@@ -30,7 +29,7 @@ namespace Gateway.Controllers
         public async Task<IEnumerable<Text>> Get()
         {
             var texts = await _context.Texts.ToListAsync();
-            var sortedTexts = texts.OrderByDescending(text => DateTime.ParseExact(text.CreatedDATE, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture));
+            var sortedTexts = texts.OrderByDescending(text => text.CreatedDATE);
             return sortedTexts;
         }
 
@@ -40,7 +39,7 @@ namespace Gateway.Controllers
         {
             var idUser = HttpContext.User.FindFirstValue("userID");
             var texts = await _context.Texts.Where(t => t.User.Id == idUser).ToListAsync();
-            var sortedTexts = texts.OrderByDescending(text => DateTime.ParseExact(text.CreatedDATE, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture));
+            var sortedTexts = texts.OrderByDescending(text => text.CreatedDATE);
             return sortedTexts;
         }
 
@@ -52,6 +51,29 @@ namespace Gateway.Controllers
             var text = await _context.Texts.FindAsync(id);
             return text == null ? NotFound() : Ok(text);
         }
+
+        [HttpGet("documentsPerDay")]
+        public async Task<IActionResult> GetDocumentsPerDay()
+        {
+            var frenchDocumentsPerDay = new int[7];
+            var englishDocumentsPerDay = new int[7];
+            var texts = await _context.Texts.ToListAsync();
+            foreach (var text in texts)
+            {
+                var d = (int)text.CreatedDATE.DayOfWeek;
+                if (text.Language == "French")
+                {
+                    frenchDocumentsPerDay[d]++;
+                }
+                if (text.Language == "English")
+                {
+                    englishDocumentsPerDay[d]++;
+                }
+            }
+
+            return Ok(new { FrenchTexts = frenchDocumentsPerDay, EnglishTexts = englishDocumentsPerDay });
+        }
+
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -66,13 +88,13 @@ namespace Gateway.Controllers
                 Language = textPresenter.Language,
                 PlainText = textPresenter.PlainText,
                 Priority = textPresenter.Priority,
-                CreatedDATE = textPresenter.CreatedDATE,
+                CreatedDATE = DateTime.Now,
                 User = user
             };
             var a = _context.Texts.Add(text);
             await _context.SaveChangesAsync();
             var id = a.Entity.Id;
-            _logService.CreateLog(id);
+            _logService.CreateLog(id, text.CreatedDATE);
             var saved = await _context.Texts.FindAsync(id);
 
             string json = JsonConvert.SerializeObject(saved, Formatting.Indented, new JsonSerializerSettings
@@ -151,7 +173,7 @@ namespace Gateway.Controllers
 
             text.PrepareText = textPresenter.PrepareText;
             text.ProcessText = textPresenter.ProcessText;
-            text.CreatedDATE = textPresenter.CreatedDATE;
+
 
             await _context.SaveChangesAsync();
 

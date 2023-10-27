@@ -30,7 +30,7 @@ namespace Gateway.Models
 
         public string? ProcessText { get; set; } = null;
 
-        public string? CreatedDATE { get; set; }
+        public DateTime CreatedDATE { get; set; }
 
         public ApplicationUser? User { get; set; }
 

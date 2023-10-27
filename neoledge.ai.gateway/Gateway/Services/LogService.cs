@@ -10,19 +10,22 @@ namespace Gateway.Services
 
         public LogService(TextDbContext context) => _context = context;
 
-        public async void CreateLog(long idText)
+        public async Task CreateLog(long idText, DateTime date)
         {
             Text? text = await _context.Texts.FindAsync(idText);
-            Log log = new()
+            if (text != null)
             {
-                Text = text,
-                Type = 0,
-                Value = DateTime.Now,
-            };
-            _context.Logs.Add(log);
-            await _context.SaveChangesAsync();
-        }
+                Log log = new Log
+                {
+                    Text = text,
+                    Type = 0,
+                    Value = date,
+                };
 
+                _context.Logs.Add(log);
+                await _context.SaveChangesAsync();
+            }
+        }
 
         public async Task AddLog(long idText, int state)
         {

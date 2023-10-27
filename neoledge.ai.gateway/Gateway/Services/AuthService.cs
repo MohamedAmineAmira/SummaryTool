@@ -27,7 +27,7 @@ namespace Gateway.Services
                 Email = registerUser.Email,
             };
             var result = await _userManager.CreateAsync(identityUser, registerUser.Password);
-            await _userManager.AddToRoleAsync(identityUser, "SimpleUser");
+            await _userManager.AddToRoleAsync(identityUser, "Admin");
             return result;
         }
 

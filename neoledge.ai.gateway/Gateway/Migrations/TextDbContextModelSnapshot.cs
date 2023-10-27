@@ -153,8 +153,8 @@ namespace Gateway.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<string>("CreatedDATE")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("CreatedDATE")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Language")
                         .IsRequired()

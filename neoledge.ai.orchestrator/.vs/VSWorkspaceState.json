@@ -5,6 +5,6 @@
     "\\Neoledge.AI.Orchestrator\\Models",
     "\\Neoledge.AI.Orchestrator\\Workers"
   ],
-  "SelectedNode": "\\Neoledge.AI.Orchestrator.sln",
+  "SelectedNode": "\\Neoledge.AI.Orchestrator\\Workers\\Orchestrator.cs",
   "PreviewInSolutionExplorer": false
 }

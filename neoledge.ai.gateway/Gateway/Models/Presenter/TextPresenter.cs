@@ -10,7 +10,6 @@
         public string? PlainText { get; set; }
         public int Priority { get; set; }
         public int State { get; set; }
-        public string? CreatedDATE { get; set; }
         public string? PrepareText { get; set; } = null;
         public string? ProcessText { get; set; } = null;
     }

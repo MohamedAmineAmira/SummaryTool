@@ -14,7 +14,7 @@ const props = defineProps({
 
 const BlockView = reactive({
     ORIGINAL: 0,
-    RESULT: 1
+
 });
 const blockView = ref(0);
 
@@ -34,22 +34,14 @@ async function copyCode(event) {
     <div class="block-section">
         <div class="block-header">
             <span class="block-title">
-                <span>{{ header }}</span>
+                <span>File Log</span>
             </span>
-            <div class="block-actions">
-                <a tabindex="0" :class="{ 'block-action-active': blockView === BlockView.ORIGINAL }"
-                    @click="activateView($event, BlockView.ORIGINAL)"><span>Original</span></a>
-                <a tabindex="1" :class="{ 'block-action-active': blockView === BlockView.RESULT }"
-                    @click="activateView($event, BlockView.RESULT)">
-                    <span>Result</span>
-                </a>
-                <a :tabindex="0" class="block-action-copy" @click="copyCode($event)"><i class="pi pi-copy"></i></a>
-            </div>
+
         </div>
         <div class="block-content">
             <div :class="containerClass" :style="previewStyle">
                 <slot name="original" v-if="blockView == BlockView.ORIGINAL" />
-                <slot name="result" v-if="blockView == BlockView.RESULT" />
+
             </div>
         </div>
     </div>
