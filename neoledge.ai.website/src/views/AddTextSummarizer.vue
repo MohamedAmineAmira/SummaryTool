@@ -88,14 +88,13 @@ function resetData() {
             <small id="username-help" :style="{ 'visibility': urlError ? 'visible' : 'hidden' }" class="p-error">Title is
                 required.</small>
             <template #footer>
-                <Button icon="pi pi-plus" label=" Add " class="p-button mr-3" @click="addTextSummarizer"></Button>
                 <Button icon="pi pi-delete-left" label="Cancel" class="p-button-secondary"
                     @click="$emit('close'), resetData()"></Button>
+                <Button icon="pi pi-plus" label=" Add " class="p-button mr-3" @click="addTextSummarizer"></Button>
             </template>
         </Dialog>
     </div>
 </template>
-
 <style scoped></style>
   
 

@@ -7,9 +7,12 @@ import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import InputSwitch from 'primevue/inputswitch';
 import axiosInstance from '@/service/axiosInstance';
+import DeleteTextTool from './DeleteTextTool.vue';
 import 'primeicons/primeicons.css';
 
 const textAnalytics = ref([]);
+const visibleDeleteModal = ref(false);
+const idDeletedTextTool = ref(null);
 const loading = ref(true);
 const tool = ref({
     name: null,
@@ -57,6 +60,10 @@ function AddTool() {
         tool.value.name = null;
         getAll();
     });
+};
+function Delete(id) {
+    idDeletedTextTool.value = id;
+    visibleDeleteModal.value = true;
 }
 </script>
 <template>
@@ -88,16 +95,21 @@ function AddTool() {
                 <template #body="{ data }">
                     <div class="grid formgrid">
                         <div class="col-1">
-                            <i title="edit" class="pi pi-pencil" style="cursor: pointer; font-size: 1.25rem;" />
+                            <i title="edit" class="pi pi-file-edit" style="cursor: pointer; font-size: 1.25rem;" />
                         </div>
                         <div class="col-1">
-                            <i title="delete" class="pi pi-trash" style="cursor: pointer; font-size: 1.25rem;" />
+                            <i title="delete" class="pi pi-trash" style="cursor: pointer; font-size: 1.25rem;"
+                                @click="Delete(data.Id)" />
                         </div>
                     </div>
                 </template>
             </Column>
         </DataTable>
     </div>
+    <Teleport to="body">
+        <DeleteTextTool :visible="visibleDeleteModal" :id="idDeletedTextTool" @close="visibleDeleteModal = false"
+            @confirm="visibleDeleteModal = false; getAll()" />
+    </Teleport>
 </template>
 <style>
 .p-datatable-wrapper {

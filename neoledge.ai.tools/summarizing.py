@@ -23,13 +23,13 @@ def summarizing_french_text(french_text):
 def summarizing_english_text(english_text):
     #model and tokenizer loading
     checkpoint = "venv/LaMini-Flan-T5-248M"
-    tokenizer = T5Tokenizer.from_pretrained(checkpoint)
-    base_model = T5ForConditionalGeneration.from_pretrained(checkpoint, device_map='auto', torch_dtype=torch.float32)
+    tokenizer = AutoTokenizer.from_pretrained(checkpoint, legacy=False)
+    base_model = T5ForConditionalGeneration.from_pretrained(checkpoint, device_map='auto', offload_folder="offload", torch_dtype=torch.float32)
     pipe_sum = pipeline(
         'summarization',
         model=base_model,
         tokenizer=tokenizer,
-        max_length=500,
+        max_length=200,
         min_length=50)
     result = pipe_sum(english_text)
     result = result[0]['summary_text']

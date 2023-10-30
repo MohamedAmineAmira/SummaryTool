@@ -9,10 +9,17 @@ import InputSwitch from 'primevue/inputswitch';
 import axiosInstance from '@/service/axiosInstance';
 import 'primeicons/primeicons.css';
 import AddDataPreprocessor from './AddDataPreprocessor.vue';
+import EditDataPreprocessor from './EditDataPreprocessor.vue';
+import DeleteDataPreprocessor from './DeleteDataPreprocessor.vue';
+
 
 const dataPreprocessors = ref([]);
 const loading = ref(true);
 const visible = ref(false);
+const visibleEditModal = ref(false);
+const visibleDeleteModal = ref(false);
+const idDeletedDataPreprocessor = ref(false);
+const dataPreprocessor = ref(null);
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   name: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
@@ -55,6 +62,17 @@ function changeIsActive(row) {
 }
 const DisplayModal = () => {
   visible.value = !visible.value;
+};
+
+function Edit(row) {
+  visibleEditModal.value = true;
+  dataPreprocessor.value = row;
+
+};
+
+function Delete(id) {
+  idDeletedDataPreprocessor.value = id;
+  visibleDeleteModal.value = true;
 }
 </script>
 <template>
@@ -86,10 +104,11 @@ const DisplayModal = () => {
         <template #body="{ data }">
           <div class="grid formgrid">
             <div class="col-3">
-              <i title="edit" class="pi pi-pencil" style="cursor: pointer; font-size: 1.25rem;" />
+              <i title="edit" class="pi pi-file-edit" style="cursor: pointer; font-size: 1.25rem;" @click="Edit(data)" />
             </div>
             <div class="col-3">
-              <i title="delete" class="pi pi-trash" style="cursor: pointer; font-size: 1.25rem;" />
+              <i title="delete" class="pi pi-trash" style="cursor: pointer; font-size: 1.25rem;"
+                @click="Delete(data.id)" />
             </div>
           </div>
         </template>
@@ -98,6 +117,10 @@ const DisplayModal = () => {
   </div>
   <Teleport to="body">
     <AddDataPreprocessor :visible="visible" @close="visible = false" @confirm="visible = false; getAll()" />
+    <EditDataPreprocessor :visible="visibleEditModal" :dataPreprocessor="dataPreprocessor"
+      @close="visibleEditModal = false" @confirm="visibleEditModal = false; getAll()" />
+    <DeleteDataPreprocessor :visible="visibleDeleteModal" :id="idDeletedDataPreprocessor"
+      @close="visibleDeleteModal = false" @confirm="visibleDeleteModal = false; getAll()" />
   </Teleport>
 </template>
 <style>

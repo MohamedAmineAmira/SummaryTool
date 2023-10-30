@@ -5,8 +5,9 @@
     "\\Gateway\\Controllers",
     "\\Gateway\\Data",
     "\\Gateway\\Models",
+    "\\Gateway\\Models\\Presenter",
     "\\Gateway\\Services"
   ],
-  "SelectedNode": "\\Gateway\\Controllers\\TextController.cs",
+  "SelectedNode": "\\Gateway\\Models\\Presenter\\TextPresenter.cs",
   "PreviewInSolutionExplorer": false
 }

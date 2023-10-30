@@ -11,6 +11,7 @@ import axiosInstance from '@/service/axiosInstance';
 import AddDocument from '@/views/AddDocument.vue';
 import ShowDocument from '@/views/ShowDocument.vue';
 import ShowLog from '@/views/ShowLog.vue';
+import DeleteDocument from './DeleteDocument.vue';
 import 'primeicons/primeicons.css';
 
 const texts = ref([]);
@@ -20,6 +21,8 @@ const showTextModalVisible = ref(false);
 const showLogTextModalVisible = ref(false);
 const selectedText = ref({});
 const selectedLogText = ref([]);
+const deleteTextModalVisible = ref(false);
+const idDeletedText = ref(false);
 
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -93,6 +96,10 @@ const showLogText = (id) => {
   });
   showLogTextModalVisible.value = true;
 }
+const DeleteText = (id) => {
+  idDeletedText.value = id;
+  deleteTextModalVisible.value = true;
+}
 </script>
 <template>
   <div class="card" :style="{ minHeight: '100%', width: '100%' }">
@@ -137,10 +144,8 @@ const showLogText = (id) => {
               <i title="show" class="pi pi-eye" style="cursor: pointer; font-size: 1.25rem;" @click="showText(data.id)" />
             </div>
             <div class="col-3">
-              <i title="edit" class="pi pi-file-edit" style="cursor: pointer; font-size: 1.25rem;"></i>
-            </div>
-            <div class="col-3">
-              <i title="delete" class="pi pi-trash" style="cursor: pointer; font-size: 1.25rem;"></i>
+              <i title="delete" class="pi pi-trash" style="cursor: pointer; font-size: 1.25rem;"
+                @click="DeleteText(data.id)"></i>
             </div>
           </div>
         </template>
@@ -151,6 +156,8 @@ const showLogText = (id) => {
     <AddDocument :visible="visible" @close="visible = false" @confirm="visible = false; getDocument()" />
     <ShowDocument :text="selectedText" :visible="showTextModalVisible" @close="showTextModalVisible = false" />
     <ShowLog :logText="selectedLogText" :visible="showLogTextModalVisible" @close="showLogTextModalVisible = false" />
+    <DeleteDocument :idText="idDeletedText" :visible="deleteTextModalVisible" @close="deleteTextModalVisible = false"
+      @confirm="deleteTextModalVisible = false; getDocument()" />
   </Teleport>
 </template>
 

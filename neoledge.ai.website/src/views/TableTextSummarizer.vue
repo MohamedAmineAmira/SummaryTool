@@ -9,10 +9,16 @@ import InputSwitch from 'primevue/inputswitch';
 import axiosInstance from '@/service/axiosInstance';
 import 'primeicons/primeicons.css';
 import AddTextSummarizer from './AddTextSummarizer.vue';
+import DeleteTextSummarizer from './DeleteTextSummarizer.vue';
+import EditTextSummarizer from './EditTextSummarizer.vue';
 
 const textProcessors = ref([]);
 const loading = ref(true);
 const visible = ref(false);
+const visibleDeleteModal = ref(false);
+const textProcessor = ref(null);
+const visibleEditModal = ref(false);
+const idDeletedTextSummarizer = ref(null);
 const filters = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     name: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
@@ -65,6 +71,14 @@ function changeIsActive(row) {
 const DisplayModal = () => {
     visible.value = !visible.value;
 }
+function Delete(id) {
+    idDeletedTextSummarizer.value = id;
+    visibleDeleteModal.value = true;
+}
+function Edit(row) {
+    textProcessor.value = row;
+    visibleEditModal.value = true;
+}
 </script>
 <template>
     <div class="card" :style="{ minHeight: '100%', width: '100%' }">
@@ -95,10 +109,12 @@ const DisplayModal = () => {
                 <template #body="{ data }">
                     <div class="grid formgrid">
                         <div class="col-3">
-                            <i title="edit" class="pi pi-pencil" style="cursor: pointer; font-size: 1.25rem;" />
+                            <i title="edit" class="pi pi-file-edit" style="cursor: pointer; font-size: 1.25rem;"
+                                @click="Edit(data)" />
                         </div>
                         <div class="col-3">
-                            <i title="delete" class="pi pi-trash" style="cursor: pointer; font-size: 1.25rem;" />
+                            <i title="delete" class="pi pi-trash" style="cursor: pointer; font-size: 1.25rem;"
+                                @click="Delete(data.Id)" />
                         </div>
                     </div>
                 </template>
@@ -107,6 +123,10 @@ const DisplayModal = () => {
     </div>
     <Teleport to="body">
         <AddTextSummarizer :visible="visible" @close="visible = false" @confirm="visible = false; getAll()" />
+        <EditTextSummarizer :visible="visibleEditModal" :textProcessor="textProcessor" @close="visibleEditModal = false"
+            @confirm="visibleEditModal = false; getAll()" />
+        <DeleteTextSummarizer :visible="visibleDeleteModal" :id="idDeletedTextSummarizer"
+            @close="visibleDeleteModal = false" @confirm="visibleDeleteModal = false; getAll()" />
     </Teleport>
 </template>
 <style>
