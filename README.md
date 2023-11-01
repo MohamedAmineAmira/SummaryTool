@@ -20,11 +20,12 @@ This tool utilizes several libraries and dependencies. To get started, make sure
 - Transformers
 - SentencePiece
 - SafeTensors
+- Requests
 
 You can install these dependencies using pip:
 
 ```bash
-pip install flask nltk spacy accelerate torch transformers sentencepiece safetensors
+pip install flask nltk spacy accelerate torch transformers sentencepiece safetensors requests
 ```
 
 Additionally, you'll need to download the language models for SpaCy. Run the following commands:
