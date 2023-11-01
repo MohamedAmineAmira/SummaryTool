@@ -24,10 +24,12 @@ This tool utilizes several libraries and dependencies. To get started, make sure
 You can install these dependencies using pip:
 
 ```bash
-pip install flask nltk spacy accelerate torch transformers sentencepiece safetensors ```
+pip install flask nltk spacy accelerate torch transformers sentencepiece safetensors
+```
 
 Additionally, you'll need to download the language models for SpaCy. Run the following commands:
 
 ```bash
 python -m spacy download en_core_web_sm
 python -m spacy download fr_core_news_sm
+
